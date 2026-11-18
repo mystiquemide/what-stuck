@@ -63,6 +63,7 @@ All a church needs is a screen or a printed QR code, and people with phones.
 ### For members
 
 - **One-screen reply page** that opens from a QR code or link. Large type, works on any phone, no sign-up.
+- **English or Spanish.** The page follows the phone's language, with a one-tap switch. Spanish speakers get the verse from the Reina-Valera 1909, crisis help that says to press 2 or text AYUDA to 988, and a Wednesday note in Spanish.
 - **Their own words back.** The thank-you screen shows exactly what they wrote, with a verse from the Berean Standard Bible.
 - **Optional Wednesday note** with their words, the sermon passage and the pastor's question. The address is deleted within 14 days.
 - **A next step.** If the church has a connect card (In The Bulletin, MinistryForms, Genesis ChMS or any form), the thank-you screen offers it.
@@ -76,11 +77,13 @@ All a church needs is a screen or a printed QR code, and people with phones.
 - **The Monday report:** said vs. heard (Close, Partly, or Mostly something else), themes with counts and quotes, drift, questions with small-group prompts, care flags, and every reply word for word.
 - **"You asked" builder:** tick up to three questions and copy a block for next Sunday's bulletin, plus small-group questions.
 - **Wednesday question** drafted by AI from the pastor's intended point, then edited and approved by the pastor. Nothing sends without that approval.
+- **Wednesday email preview** that shows the real email, with the real passage and the question as it's being edited.
 - **Series view** that shows how close each Sunday in a series got to its point.
 
 ### For the church team
 
 - **Team access** for deacons, elders and the care team. The pastor who set up the church manages who's in.
+- **Care follow-up.** Anyone on the team can mark a care reply as followed up, with a short note only the team sees, so no one falls through the cracks. It can be undone.
 - **Church settings** for the care contact, the care form link and the connect card link.
 - **Monday email** when the report is ready.
 
@@ -143,7 +146,7 @@ Scripture citation follows the faith.tools [selection criteria](https://faith.to
 
 - A word check runs the moment a reply is sent, in English and Spanish. It's deliberately broad: a false alarm only shows a kind message with resources, while a miss could leave someone without help.
 - The member sees the 988 Lifeline, the church's care contact, and an "Ask someone to reach out" button that opens the church's own care form. Their sermon reply stays anonymous, and they decide what to share on the church's form.
-- On Monday the reply sits at the top of the report, so the pastor can name care openly from the front.
+- On Monday the reply sits at the top of the report, so the pastor can name care openly from the front, and the team marks it once someone has followed up.
 - The AI adds a second, context-aware pass. Care flags from the send-time check are always kept.
 
 ## Privacy
@@ -161,7 +164,7 @@ What Stuck works with the tools churches already use. It connects through links,
 
 ### faith.tools
 
-- **Bible SDK.** Every passage in the Wednesday note comes from the [faith.tools Bible SDK](https://faith.tools/app/bible-sdk) (`@faith-tools/bible-sdk`), using the Berean Standard Bible. References like "john 3: 16" are parsed and tidied to "John 3:16", looked up, cached, and sent with the translation's attribution. If a lookup fails, the note still goes out without the passage rather than with made-up text. See [`src/scripture/passage.ts`](src/scripture/passage.ts).
+- **Bible SDK.** Every passage in the Wednesday note comes from the [faith.tools Bible SDK](https://faith.tools/app/bible-sdk) (`@faith-tools/bible-sdk`), using the Berean Standard Bible, or the Reina-Valera 1909 for members who replied in Spanish. References like "john 3: 16" are parsed and tidied to "John 3:16", looked up, cached, and sent with the translation's attribution. If a lookup fails, the note still goes out without the passage rather than with made-up text. See [`src/scripture/passage.ts`](src/scripture/passage.ts).
 - **Guardrails and criteria.** The six AI guardrails and the app selection criteria shaped the design. The table above shows how each guardrail is met.
 
 ### In The Bulletin
@@ -206,7 +209,7 @@ What Stuck was built from scratch during the hackathon window, with AI used at e
 
 ## Quality, accessibility and performance
 
-- **Tests:** 163 unit and database tests, and 14 browser tests on phone and desktop covering the member reply, the care path, the live reply count, the demo, the report, settings and the bulletin kit.
+- **Tests:** 181 unit and database tests, and 18 browser tests on phone and desktop covering the member reply in English and Spanish, the care path, the live reply count, the demo, the report, care follow-up, the email preview, settings and the bulletin kit.
 - **Accessibility:** every page in the browser tests is checked against WCAG 2.2 AA with axe. Phone-first layout, tap targets of at least 44px, and readable contrast on every surface.
 - **Performance:** on a throttled phone (slow 4G, 4x slower CPU), the landing page's main content draws in about 1.1 seconds and the reply page in about 0.7 seconds, with no layout shift.
 - **Continuous integration:** every push runs type checks, lint, tests, a production build, browser tests, a dependency audit and a secret scan.
@@ -328,7 +331,7 @@ The `Dockerfile` builds the production image. On startup it applies migrations a
 
 - It reads text only. It doesn't listen to the sermon itself.
 - Care detection is a safety net. It can miss things and sometimes flags too much, which is why it only ever shows resources and never acts on its own.
-- Partner connections are links and copy-ready text today. Next: sending small-group questions to group leaders through the Genesis ChMS API, a Spanish reply page, and a series graphic on the QR slide.
-- The reply page and emails are in English. The report already understands replies in other languages.
+- Partner connections are links and copy-ready text today. Next: sending small-group questions to group leaders through the Genesis ChMS API, and a series graphic on the QR slide.
+- The member side speaks English and Spanish. The pastor side is English, and the pastor's Wednesday question is sent exactly as written, never machine-translated.
 
 Built during the AI for Church Hackathon 2026 (Oct 30 to Nov 27). MIT licensed.

@@ -11,6 +11,8 @@ Five minutes, with a phone and a laptop. Everything here works on the live site 
 3. Type what stuck with you and send it. You get a thank-you with your own words, a verse, and the church's connect card as a next step.
 4. Optional: send a reply like "I don't see the point of anything anymore." You'll see the 988 Lifeline, the church's care contact, and an "Ask someone to reach out" button that opens the church's own care form. This is what a hurting member sees.
 
+Optional: set your phone to Spanish, or tap **Español** at the top of the reply page. The whole member side switches, including the crisis help and the verse.
+
 Watch the laptop: the reply count on **Pressing On** goes up within about 10 seconds, without a reload. The demo church is shared and its replies are made up, so please keep it kind.
 
 ## 2. Be the pastor on Monday (laptop, 2 minutes)
@@ -19,7 +21,7 @@ Open **Not Finished Yet**, then **Read what stuck**. Read it top to bottom:
 
 | Section                       | What to notice                                                                                                                |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| One reply may need your care  | Shown first, anonymous, with the exact words.                                                                                 |
+| One reply may need your care  | Shown first, anonymous, with the exact words. In a real church the team marks it as followed up, with a short note.           |
 | You said / They heard         | The pastor's intended point next to what the room actually heard, rated Close, Partly or Mostly something else.               |
 | What stuck                    | Themes with a count. Open any theme to see the real replies behind it.                                                        |
 | Where it drifted              | Things people heard that the pastor didn't mean, with the replies that show it.                                               |
@@ -34,7 +36,7 @@ Go back and open **Philippians: Unfinished**. Three Sundays side by side show ho
 
 ## 4. The Wednesday note
 
-Members who tick "Send my words back to me on Wednesday" get one email. It holds their own words exactly as written, the passage from the Berean Standard Bible, and a question the pastor wrote or approved. Their address is deleted within 14 days. You can see the pastor's approval step on the **Pressing On** page, under **Wednesday question**.
+Members who tick "Send my words back to me on Wednesday" get one email. It holds their own words exactly as written, the passage from the Berean Standard Bible, and a question the pastor wrote or approved. Their address is deleted within 14 days. You can see the pastor's approval step on the **Pressing On** page, under **Wednesday question**, and open **Preview the Wednesday email** to see the exact email, with the real passage.
 
 ![Member reply, thank-you, and the Wednesday note](docs/screens/member.webp)
 
