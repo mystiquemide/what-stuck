@@ -8,11 +8,13 @@ Built for the AI for Church Hackathon 2026.
 
 ## Run locally
 
-Requires Node 22 and Postgres.
+Requires Node 22 and Postgres 16.
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env.local   # then fill in the values
 npm install
+npm run db:migrate
+npm run db:seed              # optional demo church
 npm run dev
 ```
 
@@ -21,3 +23,5 @@ npm run dev
 ```bash
 npm run check
 ```
+
+Database tests run when `TEST_DATABASE_URL` points at an empty Postgres database.
