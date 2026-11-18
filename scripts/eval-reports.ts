@@ -2,7 +2,8 @@
  * Live eval: runs every case in the eval set through the real model, applies
  * the code checks, and saves each report to eval-output/ for a human to read.
  *
- *   ANTHROPIC_API_KEY=... npm run eval:reports
+ *   npm run eval:reports            (uses GEMINI_API_KEY or ANTHROPIC_API_KEY from .env.local)
+ *   npm run eval:reports <case-name>
  *
  * Not part of CI, so it never spends API credit on a push.
  */
@@ -11,15 +12,14 @@ import { config } from "dotenv";
 import { checkReport } from "../src/reports/evals/check";
 import { evalCases } from "../src/reports/evals/cases";
 import { groundOutput } from "../src/reports/grounding";
-import { AnthropicReportModel } from "../src/reports/model-anthropic";
+import { createReportModel } from "../src/reports/providers";
 import { buildUserMessage, PROMPT_VERSION, SYSTEM_PROMPT } from "../src/reports/prompt";
 
 config({ path: ".env.local", quiet: true });
 
 async function main() {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error("ANTHROPIC_API_KEY is not set");
-  const model = new AnthropicReportModel(key, process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5");
+  const model = createReportModel(process.env);
+  if (!model) throw new Error("Set GEMINI_API_KEY or ANTHROPIC_API_KEY");
   const only = process.argv[2];
 
   await mkdir("eval-output", { recursive: true });

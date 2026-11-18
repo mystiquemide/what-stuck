@@ -16,6 +16,9 @@ const envSchema = z.object({
   IP_HASH_SALT: z.string().min(16, "must be at least 16 characters"),
   CRON_SECRET: z.string().min(32, "must be at least 32 characters"),
 
+  // AI: Gemini is used when its key is set, otherwise Claude.
+  GEMINI_API_KEY: z.string().min(1).optional(),
+  GEMINI_MODEL: z.string().min(1).default("gemini-2.5-flash"),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_MODEL: z.string().min(1).default("claude-sonnet-5-5"),
 
@@ -50,7 +53,7 @@ export function getEnv(): Env {
 
 export function features(env: Env = getEnv()) {
   return {
-    ai: Boolean(env.ANTHROPIC_API_KEY),
+    ai: Boolean(env.GEMINI_API_KEY || env.ANTHROPIC_API_KEY),
     email: Boolean(env.RESEND_API_KEY && env.EMAIL_FROM),
   };
 }

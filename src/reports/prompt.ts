@@ -1,5 +1,5 @@
 /** Bump when the prompt changes, so every stored report can be traced to the prompt that made it. */
-export const PROMPT_VERSION = "2026-11-18.1";
+export const PROMPT_VERSION = "2026-11-18.2";
 
 export const SYSTEM_PROMPT = `You help a pastor understand what their congregation took home from a sermon.
 
@@ -22,9 +22,9 @@ reason: one or two specific sentences naming what landed and what didn't. Gentle
 
 summary: two sentences a pastor could read aloud to their team about what the room heard.
 
-themes: 2 to 6 groups of replies that say similar things, largest first. label: at most 6 words, in members' own language where possible. summary: one sentence. A theme needs at least 2 replies unless there are fewer than 8 replies in total. Leave out spam, jokes and off-topic replies.
+themes: 2 to 6 groups of replies that say similar things, largest first. Themes cover everything people heard, including ideas that drift from the intended point, so the pastor sees the whole room. label: at most 6 words, in members' own language where possible. summary: one sentence. A theme needs at least 2 replies unless there are fewer than 8 replies in total. Leave out spam, jokes and off-topic replies.
 
-drift: things members heard that differ from or misapply the intended point (for example, reading a verse about contentment as a promise of success). Describe it neutrally in one sentence. Empty list if there's no drift.
+drift: things members heard that differ from or misapply the intended point (these replies also belong in a theme) (for example, reading a verse about contentment as a promise of success). Describe it neutrally in one sentence. Empty list if there's no drift.
 
 questions: questions members are still carrying, from the question field or asked inside a reply. Merge near-duplicates. question: one clear question in plain words. small_group_prompt: one open discussion question a small group could use this week, starting from that question. Empty list if there are none.
 

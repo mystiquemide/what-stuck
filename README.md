@@ -34,7 +34,7 @@ Open the demo church from the home page. It's a made-up church with made-up repl
 
 ## Tech
 
-Next.js 16 (App Router) and TypeScript, Postgres with Drizzle, Claude for the report (structured JSON output), Resend for email, Tailwind CSS. Tests use Vitest and Playwright with axe accessibility checks. CI runs typecheck, lint, unit and database tests, a production build, browser tests, a dependency audit and a secret scan.
+Next.js 16 (App Router) and TypeScript, Postgres with Drizzle, Gemini for the report (schema-constrained JSON output, with Claude supported as an alternative), Resend for email, Tailwind CSS. Tests use Vitest and Playwright with axe accessibility checks. CI runs typecheck, lint, unit and database tests, a production build, browser tests, a dependency audit and a secret scan.
 
 ## Run locally
 
@@ -53,7 +53,7 @@ npm run db:seed
 npm run dev
 ```
 
-Without `ANTHROPIC_API_KEY` the app runs and reports stay off. Without `RESEND_API_KEY`, emails print to the terminal in development.
+Without `GEMINI_API_KEY` (or `ANTHROPIC_API_KEY`) the app runs and reports stay off. Without `RESEND_API_KEY`, emails print to the terminal in development.
 
 ## Tests
 

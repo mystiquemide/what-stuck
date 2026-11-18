@@ -1,7 +1,7 @@
 import "server-only";
 import { features, getEnv } from "@/lib/env";
 import { HttpError } from "@/lib/http";
-import { AnthropicReflectionDrafter, AnthropicReportModel } from "./model-anthropic";
+import { createReflectionDrafter, createReportModel } from "./providers";
 import type { ModelOutput } from "./schema";
 
 export type ModelResult = {
@@ -16,25 +16,26 @@ export interface ReportModel {
   run(system: string, user: string, maxTokens: number): Promise<ModelResult>;
 }
 
-export function getReportModel(): ReportModel {
-  const env = getEnv();
-  if (!features(env).ai) {
-    throw new HttpError(503, "AI reports aren't set up yet. Ask your admin to add the AI key.");
-  }
-  return new AnthropicReportModel(env.ANTHROPIC_API_KEY!, env.ANTHROPIC_MODEL);
-}
-
 export interface ReflectionDrafter {
   draft(system: string, user: string): Promise<string | null>;
 }
 
+export function getReportModel(): ReportModel {
+  const env = getEnv();
+  const model = features(env).ai ? createReportModel(env) : null;
+  if (!model)
+    throw new HttpError(503, "AI reports aren't set up yet. Ask your admin to add the AI key.");
+  return model;
+}
+
 export function getReflectionDrafter(): ReflectionDrafter {
   const env = getEnv();
-  if (!features(env).ai) {
+  const drafter = features(env).ai ? createReflectionDrafter(env) : null;
+  if (!drafter) {
     throw new HttpError(
       503,
       "AI drafting isn't set up yet. You can still write the question yourself.",
     );
   }
-  return new AnthropicReflectionDrafter(env.ANTHROPIC_API_KEY!, env.ANTHROPIC_MODEL);
+  return drafter;
 }

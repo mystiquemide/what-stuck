@@ -33,6 +33,11 @@ describe("parseEnv", () => {
 });
 
 describe("features", () => {
+  it("turns AI on with either a Gemini or a Claude key", () => {
+    expect(features(parseEnv({ ...valid, GEMINI_API_KEY: "g" })).ai).toBe(true);
+    expect(features(parseEnv({ ...valid, ANTHROPIC_API_KEY: "a" })).ai).toBe(true);
+  });
+
   it("is off when keys are missing", () => {
     expect(features(parseEnv(valid))).toEqual({ ai: false, email: false });
   });
