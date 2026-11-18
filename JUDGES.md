@@ -54,4 +54,4 @@ Members who tick "Send my words back to me on Wednesday" get one email. It holds
 
 - The demo church, its people and its replies are made up. Its reports were written by the real model from those replies.
 - The demo is read-only for the pastor side, so you can't break it.
-- Starting your own church uses email sign-in, which is off on the live site until the sending domain is verified.
+- Want the full pastor side? Click **Start for your church**, sign in with the link we email you, and set up a sermon. Open its reply link on your phone, send a few replies, then build the report and watch the AI work on your own words. Each church can build up to 12 reports a day.

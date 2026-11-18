@@ -140,6 +140,5 @@ The `Dockerfile` builds the production image. On startup it applies migrations a
 
 - It reads text only. It doesn't listen to the sermon itself.
 - Care detection is a safety net. It can miss things and sometimes flags too much, which is why it only ever shows resources and never acts on its own.
-- On the live site, email sign-in for new churches is off until the email domain is verified, so the demo church is the way to explore.
 
 Built during the AI for Church Hackathon 2026 (Oct 30 to Nov 27). MIT licensed.
