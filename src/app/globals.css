@@ -20,6 +20,9 @@
   --color-amber-soft: #fef3c7;
   --color-care: #9f1239;
   --color-care-soft: #fff1f2;
+  --color-sage: #ecebdf;
+  --color-sage-deep: #e1dfcf;
+  --color-gold: #9c8450;
 
   --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
