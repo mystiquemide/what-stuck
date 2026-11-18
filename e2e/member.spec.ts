@@ -21,6 +21,10 @@ test.describe("member reply", () => {
     await expect(page.getByRole("heading", { name: "Thank you." })).toBeVisible();
     await expect(page.getByText("Grace, not grit.")).toBeVisible();
     await expect(page.getByText(/Wednesday morning/)).toBeVisible();
+    await expect(page.getByRole("link", { name: /Open the connect card/ })).toHaveAttribute(
+      "href",
+      "/sample-form/connect",
+    );
     await expectAccessible(page);
   });
 
@@ -37,6 +41,10 @@ test.describe("member reply", () => {
     await expect(page.getByRole("heading", { name: "Thank you for telling us." })).toBeVisible();
     await expect(page.getByRole("link", { name: "Call or text 988" })).toHaveAttribute("href", "tel:988");
     await expect(page.getByText("Pastoral care line")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ask someone to reach out" })).toHaveAttribute(
+      "href",
+      "/sample-form/care",
+    );
     await expectAccessible(page);
   });
 

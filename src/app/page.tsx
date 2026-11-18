@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { BSB_NOTICE } from "@/scripture/notice";
 import Link from "next/link";
 import { EmailShot, PhoneReply, ReportShot, SlideShot } from "@/components/landing/product-shots";
 import { Logo } from "@/components/logo";
@@ -141,7 +142,7 @@ export default function Home() {
               &ldquo;Consequently, faith comes by hearing, and hearing by the word of Christ.&rdquo;
             </blockquote>
             <figcaption className="text-ink-subtle mt-5 text-base">
-              Romans 10:17, Berean Standard Bible
+              Romans 10:17, Berean Standard Bible (BSB)
             </figcaption>
             <p className="text-ink-muted mx-auto mt-8 max-w-xl text-lg">
               Preaching is half of a conversation. What Stuck gives you the other half: what people
@@ -317,6 +318,20 @@ export default function Home() {
               Sign in
             </Link>
           </nav>
+        </div>
+        <div className="text-ink-subtle mx-auto w-full max-w-6xl space-y-2 px-6 pb-8 text-sm">
+          <p>
+            Scripture comes from the{" "}
+            <a
+              href="https://faith.tools/app/bible-sdk"
+              className="hover:text-ink underline underline-offset-4"
+            >
+              faith.tools Bible SDK
+            </a>
+            . Works with the tools churches already use, like In The Bulletin, MinistryForms and
+            Genesis ChMS.
+          </p>
+          <p>{BSB_NOTICE}</p>
         </div>
       </footer>
     </div>

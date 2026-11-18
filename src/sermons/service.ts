@@ -147,6 +147,8 @@ export async function getPublicSermon(db: Database, code: string) {
       churchName: churches.name,
       churchTimezone: churches.timezone,
       churchCareContact: churches.careContact,
+      churchCareFormUrl: churches.careFormUrl,
+      churchConnectFormUrl: churches.connectFormUrl,
     })
     .from(sermons)
     .innerJoin(churches, eq(churches.id, sermons.churchId))

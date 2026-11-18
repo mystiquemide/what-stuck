@@ -18,18 +18,27 @@ export function AppHeader({ viewer, churchName }: { viewer: Viewer; churchName: 
       )}
       <div className="no-print border-gold/20 bg-sage relative overflow-hidden border-b">
         <OliveBranch className="text-gold/60 pointer-events-none absolute -top-6 right-2 hidden w-24 sm:block" />
-        <header className="relative mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-6 py-4">
+        <header className="relative mx-auto flex w-full max-w-2xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
           <Link href="/app" className="min-w-0">
             <Logo size={26} />
             <span className="text-ink-subtle mt-1 block truncate text-sm">{churchName}</span>
           </Link>
-          <nav aria-label="Main" className="flex shrink-0 items-center gap-1">
-            <Link
-              href="/app/team"
-              className="text-ink-muted hover:text-ink flex min-h-11 items-center rounded-lg px-3 text-base font-medium"
-            >
-              Team
-            </Link>
+          <nav
+            aria-label="Main"
+            className="-ml-2.5 flex w-full items-center gap-1 sm:ml-0 sm:w-auto sm:shrink-0"
+          >
+            {[
+              { href: "/app/team", label: "Team" },
+              { href: "/app/settings", label: "Settings" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-ink-muted hover:text-ink flex min-h-11 items-center rounded-lg px-2.5 text-base font-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
             <SignOutButton label={viewer.kind === "staff" ? "Sign out" : "Leave demo"} />
           </nav>
         </header>

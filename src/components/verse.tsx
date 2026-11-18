@@ -21,7 +21,7 @@ export function Verse({
           &ldquo;{text}&rdquo;
         </blockquote>
         <figcaption className="text-ink-subtle mt-1 text-sm">
-          {reference}, Berean Standard Bible
+          {reference}, Berean Standard Bible (BSB)
         </figcaption>
       </div>
     </figure>

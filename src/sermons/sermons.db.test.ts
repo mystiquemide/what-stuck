@@ -188,6 +188,8 @@ describe.skipIf(!hasTestDb)("replies", () => {
     expect(Object.keys(pub!).sort()).toEqual(
       [
         "churchCareContact",
+        "churchCareFormUrl",
+        "churchConnectFormUrl",
         "churchName",
         "churchTimezone",
         "id",

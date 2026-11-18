@@ -33,7 +33,14 @@ export async function seedDemo(db: Database, { replace = false, now = new Date()
         .select({ id: churches.id })
         .from(churches)
         .where(eq(churches.slug, DEMO_CHURCH_SLUG));
-      if (existing) return { created: false };
+      if (existing) {
+        // Older demo churches predate the form links; fill them in without touching anything else.
+        await tx
+          .update(churches)
+          .set({ careFormUrl: demoChurch.careFormUrl, connectFormUrl: demoChurch.connectFormUrl })
+          .where(and(eq(churches.id, existing.id), isNull(churches.careFormUrl)));
+        return { created: false };
+      }
     }
 
     const [church] = await tx

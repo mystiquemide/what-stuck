@@ -12,6 +12,7 @@ import { getEnv } from "@/lib/env";
 import { formatSermonDate, plural } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import { getSermonForViewer, publicReplyUrl } from "@/sermons/service";
+import { BulletinKit } from "./bulletin-kit";
 import { ReflectionEditor } from "./reflection-editor";
 import { ShareActions } from "./share-actions";
 
@@ -76,6 +77,8 @@ export default async function SermonPage({ params }: PageProps<"/app/sermons/[id
         <ButtonLink href={`/app/sermons/${sermon.id}/report`} full className="mt-8">
           Read what stuck
         </ButtonLink>
+
+        {sermon.status === "open" && <BulletinKit replyUrl={replyUrl} sermonTitle={sermon.title} />}
 
         <ReflectionEditor
           sermonId={sermon.id}

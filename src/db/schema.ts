@@ -36,6 +36,10 @@ export const churches = pgTable("churches", {
   timezone: text("timezone").notNull().default("America/Chicago"),
   /** Shown to a member whose reply suggests they need help, next to crisis lines. */
   careContact: text("care_contact"),
+  /** The church's own prayer or care form (MinistryForms, Genesis ChMS or any form). Offered after a care reply. */
+  careFormUrl: text("care_form_url"),
+  /** The church's own connect card or next-steps form. Offered on the thank-you screen. */
+  connectFormUrl: text("connect_form_url"),
   isDemo: boolean("is_demo").notNull().default(false),
   createdAt: createdAt(),
 });

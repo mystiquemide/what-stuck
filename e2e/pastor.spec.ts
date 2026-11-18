@@ -44,3 +44,21 @@ test("signed-out visitors are sent to sign in", async ({ page }) => {
   await page.goto("/app");
   await expect(page).toHaveURL(/\/login$/);
 });
+
+test("church settings show where members go next, read-only in the demo", async ({ page }) => {
+  await openDemo(page);
+  await page.goto("/app/settings");
+  await expect(page.getByRole("heading", { name: "Church settings" })).toBeVisible();
+  await expect(page.getByLabel(/Prayer or care form link/)).toHaveValue("/sample-form/care");
+  await expect(page.getByLabel(/Prayer or care form link/)).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Save settings" })).toHaveCount(0);
+  await expectAccessible(page);
+});
+
+test("sermon page has a bulletin kit while taking replies", async ({ page }) => {
+  await openDemo(page);
+  await page.getByRole("link", { name: /Pressing On/ }).first().click();
+  await expect(page.getByText("For your digital bulletin")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Copy an announcement" })).toBeVisible();
+  await expectAccessible(page);
+});

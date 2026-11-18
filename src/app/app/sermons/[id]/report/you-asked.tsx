@@ -39,7 +39,8 @@ export function YouAsked({
   return (
     <>
       <p className="text-ink-muted mt-1 text-base">
-        Pick up to three to answer next Sunday or hand to small groups.
+        Pick up to three to answer next Sunday. Paste them into your bulletin, such as In The
+        Bulletin, or hand them to small groups.
       </p>
       <ul className="mt-4 space-y-3">
         {questions.map((q, i) => (

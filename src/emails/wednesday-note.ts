@@ -1,5 +1,6 @@
 import type { EmailMessage } from "@/lib/email";
 import type { Passage } from "@/scripture/passage";
+import { BSB_NOTICE } from "@/scripture/notice";
 import { emailLayout, escapeHtml } from "./html";
 
 export type WednesdayNoteInput = {
@@ -18,7 +19,9 @@ export type WednesdayNoteInput = {
  */
 export function wednesdayNote(input: WednesdayNoteInput): EmailMessage {
   const { passage } = input;
-  const footer = `You asked for this one-time note after "${input.sermonTitle}" at ${input.churchName}. Your email address is deleted within 14 days.`;
+  const footer =
+    `You asked for this one-time note after "${input.sermonTitle}" at ${input.churchName}. Your email address is deleted within 14 days.` +
+    (passage ? ` ${BSB_NOTICE}` : "");
 
   const textParts = ["On Sunday you said:", "", `"${input.takeaway}"`, ""];
   if (passage) {

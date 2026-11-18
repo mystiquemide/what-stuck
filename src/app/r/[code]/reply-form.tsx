@@ -12,13 +12,23 @@ type Props = {
   sermonTitle: string;
   open: boolean;
   careContact: string | null;
+  careFormUrl: string | null;
+  connectFormUrl: string | null;
 };
 
 type Sent = { takeaway: string; care: boolean; noteScheduled: boolean };
 
 const MAX = 500;
 
-export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: Props) {
+export function ReplyForm({
+  code,
+  churchName,
+  sermonTitle,
+  open,
+  careContact,
+  careFormUrl,
+  connectFormUrl,
+}: Props) {
   const [takeaway, setTakeaway] = useState("");
   const [question, setQuestion] = useState("");
   const [wantsNote, setWantsNote] = useState(false);
@@ -53,7 +63,14 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
   }
 
   if (sent?.care)
-    return <CareScreen header={header} churchName={churchName} careContact={careContact} />;
+    return (
+      <CareScreen
+        header={header}
+        churchName={churchName}
+        careContact={careContact}
+        careFormUrl={careFormUrl}
+      />
+    );
 
   if (sent) {
     return (
@@ -84,6 +101,22 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
             Your pastor reads every reply this week.
             {sent.noteScheduled && " We'll send your words back to you Wednesday morning."}
           </p>
+          {connectFormUrl && (
+            <a
+              href={connectFormUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-card border-line bg-surface hover:border-ink-subtle mt-8 block border p-5"
+            >
+              <span className="block text-lg font-semibold">Take a next step at {churchName}</span>
+              <span className="text-ink-muted mt-1 block text-base">
+                New here, or want to get connected? Fill in the church&apos;s connect card.
+              </span>
+              <span className="text-clay mt-2 block text-base font-semibold">
+                Open the connect card <span aria-hidden>→</span>
+              </span>
+            </a>
+          )}
           <Verse className="mt-10" {...VERSES.lamp} />
         </div>
         <Button
@@ -242,10 +275,12 @@ function CareScreen({
   header,
   churchName,
   careContact,
+  careFormUrl,
 }: {
   header: React.ReactNode;
   churchName: string;
   careContact: string | null;
+  careFormUrl: string | null;
 }) {
   return (
     <Page>
@@ -275,6 +310,23 @@ function CareScreen({
         <section className="rounded-card border-line bg-surface mt-4 border p-5">
           <p className="text-lg font-semibold">Talk to someone at {churchName}</p>
           <p className="text-ink-muted mt-1 text-base">{careContact}</p>
+        </section>
+      )}
+      {careFormUrl && (
+        <section className="rounded-card border-line bg-surface mt-4 border p-5">
+          <p className="text-lg font-semibold">Want someone to reach out?</p>
+          <p className="text-ink-muted mt-1 text-base">
+            Your reply here stays anonymous. On the church&apos;s own form you choose what to share
+            and how they can reach you.
+          </p>
+          <a
+            href={careFormUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-button border-line bg-surface text-ink hover:border-ink-subtle mt-4 inline-flex min-h-14 w-full items-center justify-center border-[1.5px] px-6 text-lg font-semibold"
+          >
+            Ask someone to reach out
+          </a>
         </section>
       )}
       <div className="flex-1" />

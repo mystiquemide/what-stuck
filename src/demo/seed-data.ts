@@ -22,6 +22,8 @@ export const demoChurch = {
   slug: DEMO_CHURCH_SLUG,
   timezone: "America/Chicago",
   careContact: "Pastoral care line: (555) 014-2200",
+  careFormUrl: "/sample-form/care",
+  connectFormUrl: "/sample-form/connect",
 };
 
 export const demoSeriesTitle = "Philippians: Unfinished";

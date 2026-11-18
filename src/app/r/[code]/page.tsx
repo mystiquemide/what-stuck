@@ -23,6 +23,8 @@ export default async function ReplyPage({ params }: PageProps<"/r/[code]">) {
       sermonTitle={sermon.title}
       open={sermon.status === "open"}
       careContact={sermon.churchCareContact}
+      careFormUrl={sermon.churchCareFormUrl}
+      connectFormUrl={sermon.churchConnectFormUrl}
     />
   );
 }
