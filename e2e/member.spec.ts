@@ -49,7 +49,8 @@ test.describe("member reply", () => {
   });
 
   test("shows a friendly page for a code that doesn't exist", async ({ page }) => {
-    await page.goto("/r/zzzzzzzz");
+    const response = await page.goto("/r/zzzzzzzz");
+    expect(response?.status()).toBe(404);
     await expect(page.getByRole("heading", { name: "We couldn't find that page." })).toBeVisible();
     await expectAccessible(page);
   });

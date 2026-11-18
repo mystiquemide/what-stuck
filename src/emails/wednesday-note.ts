@@ -23,7 +23,14 @@ export function wednesdayNote(input: WednesdayNoteInput): EmailMessage {
     `You asked for this one-time note after "${input.sermonTitle}" at ${input.churchName}. Your email address is deleted within 14 days.` +
     (passage ? ` ${BSB_NOTICE}` : "");
 
-  const textParts = ["On Sunday you said:", "", `"${input.takeaway}"`, ""];
+  const textParts = [
+    `${input.churchName} · ${input.sermonTitle}`,
+    "",
+    "On Sunday you said:",
+    "",
+    `"${input.takeaway}"`,
+    "",
+  ];
   if (passage) {
     textParts.push(`From ${passage.reference}:`, "");
     textParts.push(passage.text ?? `Read it here: ${passage.readUrl}`, "");
@@ -49,7 +56,8 @@ ${
     : "";
 
   const html = emailLayout(
-    `<p style="margin:0 0 8px;color:#57534e;">On Sunday you said:</p>
+    `<p style="margin:0 0 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#57534e;">${escapeHtml(input.churchName)} · ${escapeHtml(input.sermonTitle)}</p>
+<p style="margin:0 0 8px;color:#57534e;">On Sunday you said:</p>
 <p style="margin:0;font-size:26px;line-height:1.35;">&ldquo;${escapeHtml(input.takeaway)}&rdquo;</p>
 ${passageHtml}
 <p style="margin:28px 0 8px;color:#57534e;">One question to sit with this week:</p>
@@ -59,7 +67,7 @@ ${passageHtml}
 
   return {
     to: input.to,
-    subject: "What stuck with you on Sunday",
+    subject: `What stuck with you at ${input.churchName}`,
     text: textParts.join("\n"),
     html,
     headers: {
