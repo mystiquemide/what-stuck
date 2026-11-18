@@ -19,7 +19,15 @@ export function AppHeader({ viewer, churchName }: { viewer: Viewer; churchName: 
           <span className="block font-serif text-xl leading-none font-medium">What Stuck</span>
           <span className="text-ink-subtle mt-1 block truncate text-sm">{churchName}</span>
         </Link>
-        {viewer.kind === "staff" ? <SignOutButton /> : <SignOutButton label="Leave demo" />}
+        <nav aria-label="Main" className="flex shrink-0 items-center gap-1">
+          <Link
+            href="/app/team"
+            className="text-ink-muted hover:text-ink flex min-h-11 items-center rounded-lg px-3 text-base font-medium"
+          >
+            Team
+          </Link>
+          <SignOutButton label={viewer.kind === "staff" ? "Sign out" : "Leave demo"} />
+        </nav>
       </header>
     </>
   );

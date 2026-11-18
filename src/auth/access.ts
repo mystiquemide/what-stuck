@@ -86,3 +86,13 @@ export function systemViewer(churchId: string): Viewer {
     canWrite: true,
   };
 }
+
+/** Only the church's owner (the pastor who set it up) can manage the team. */
+export function assertOwner(
+  viewer: Viewer | null,
+  churchId: string,
+): asserts viewer is Extract<Viewer, { kind: "staff" }> {
+  assertCanWrite(viewer, churchId);
+  if (viewer.role !== "owner")
+    throw forbidden("Only the pastor who set up this church can change the team.");
+}
