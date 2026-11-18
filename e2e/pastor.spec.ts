@@ -3,9 +3,9 @@ import { expectAccessible, openDemo } from "./helpers";
 
 test("landing page leads to the demo", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("take home from Sunday");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("took home from Sunday");
   await expectAccessible(page);
-  await page.getByRole("link", { name: "Try the demo church" }).click();
+  await page.getByRole("link", { name: "Open the demo church" }).first().click();
   await expect(page.getByRole("heading", { name: "Your sermons" })).toBeVisible();
 });
 

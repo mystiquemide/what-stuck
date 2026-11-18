@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Viewer } from "@/auth/access";
+import { Logo } from "./logo";
 import { SignOutButton } from "./sign-out-button";
 
 /** Top of every pastor page: wordmark, church, and a clear note when it's the demo. */
@@ -16,7 +17,7 @@ export function AppHeader({ viewer, churchName }: { viewer: Viewer; churchName: 
       )}
       <header className="no-print mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-6 pt-6">
         <Link href="/app" className="min-w-0">
-          <span className="block font-serif text-xl leading-none font-medium">What Stuck</span>
+          <Logo size={26} />
           <span className="text-ink-subtle mt-1 block truncate text-sm">{churchName}</span>
         </Link>
         <nav aria-label="Main" className="flex shrink-0 items-center gap-1">

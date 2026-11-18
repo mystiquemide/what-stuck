@@ -1,121 +1,268 @@
 import Link from "next/link";
-import { ButtonLink, Card, Quote } from "@/components/ui";
+import {
+  EmailShot,
+  PhoneReply,
+  ReportShot,
+  ReportSlice,
+  SlideShot,
+} from "@/components/landing/product-shots";
+import { Logo } from "@/components/logo";
 
-const steps = [
+const week = [
   {
-    title: "Put one question on the screen",
-    body: "Type the one thing you want people to leave with. At the end of the sermon, show the QR code: “What will stick with you?”",
+    day: "Sunday",
+    title: "One question on the screen",
+    body: "Write the one thing you want people to leave with. At the end of the sermon, put up the slide. People scan and answer in their own words. No app, no account, no names.",
+    shot: "slide",
   },
   {
-    title: "People answer in ten seconds",
-    body: "No app, no account, no name. Their own words, in any language. They can ask for those words back on Wednesday.",
+    day: "Monday",
+    title: "A report you can read with your coffee",
+    body: "See how close the room got to your point, the themes in their own words, where it drifted, and the questions they're still carrying. Replies that sound like someone is hurting come first.",
+    shot: "report",
   },
   {
-    title: "Read it Monday morning",
-    body: "See how close the room got to your point, what drifted, and the questions people are still carrying.",
+    day: "Wednesday",
+    title: "Their words, back to them",
+    body: "Anyone who asked gets one email: what they said on Sunday, the passage, and a question you approved. The sermon keeps working halfway through the week.",
+    shot: "email",
   },
+] as const;
+
+const does = [
+  "Groups replies into themes, each backed by real quotes",
+  "Shows where people heard something you didn't mean",
+  "Puts replies that may need care at the top",
+  "Turns questions into next Sunday's bulletin and small-group prompts",
 ];
 
-const promises = [
-  "Anonymous by default. No names, no member data.",
-  "Every theme links to the real replies. Nothing invented.",
-  "It never grades the preacher.",
-  "AI sorts. You decide what gets shared.",
-  "Replies that sound like someone is hurting go to the top, with crisis help shown right away.",
-  "Scripture comes from a licensed Bible, never from AI.",
+const never = [
+  "Grades your preaching",
+  "Asks members for their names",
+  "Invents a quote or a number. Every theme links to real replies",
+  "Writes Scripture. Passages come from a licensed Bible",
+  "Sends anything you haven't approved",
 ];
+
+const buttonPrimary =
+  "inline-flex min-h-14 items-center justify-center rounded-button bg-ink px-7 text-lg font-semibold text-paper transition hover:-translate-y-0.5 hover:bg-ink/90 hover:shadow-[0_10px_24px_-12px_rgba(28,25,23,0.6)] motion-reduce:hover:translate-y-0";
+const buttonSecondary =
+  "inline-flex min-h-14 items-center justify-center rounded-button border-[1.5px] border-line bg-surface px-7 text-lg font-semibold text-ink transition hover:border-ink-subtle";
 
 export default function Home() {
   return (
-    <main className="flex-1">
-      <section className="mx-auto max-w-2xl px-6 pt-14 pb-12">
-        <p className="font-serif text-xl font-medium">What Stuck</p>
-        <h1 className="mt-10 font-serif text-[2.75rem] leading-[1.05] font-medium tracking-[-0.015em] sm:text-6xl">
-          What did your church actually take home from Sunday?
-        </h1>
-        <p className="text-ink-muted mt-6 text-xl">
-          Pastors preach every week and almost never find out. What Stuck asks one question after
-          the sermon and shows you, on Monday, what landed and what didn&apos;t.
-        </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="/demo" className="sm:flex-1">
-            Try the demo church
-          </ButtonLink>
-          <ButtonLink href="/login" variant="secondary" className="sm:flex-1">
-            Start for your church
-          </ButtonLink>
-        </div>
-        <p className="text-ink-subtle mt-3 text-sm">Free. No app to install. Works on any phone.</p>
-      </section>
-
-      <section className="mx-auto max-w-2xl px-6 pb-12">
-        <Card className="p-6">
-          <p className="text-ink-subtle text-sm font-medium">You said</p>
-          <p className="mt-1 font-serif text-xl leading-snug">
-            Contentment is learned by leaning on Christ in every season, not by getting what you
-            want.
-          </p>
-          <div className="border-line my-5 border-t" />
-          <p className="text-ink-subtle text-sm font-medium">Some of them heard</p>
-          <Quote className="bg-paper mt-2">
-            I can do all things through Christ. Going to crush my finals this week.
-          </Quote>
-          <p className="text-ink-muted mt-4 text-base">
-            Now you know what to say next Sunday. That&apos;s the point.
-          </p>
-        </Card>
-      </section>
-
-      <section className="mx-auto max-w-2xl px-6 pb-12">
-        <h2 className="font-serif text-3xl font-medium">How it works</h2>
-        <ol className="mt-6 space-y-6">
-          {steps.map((step, i) => (
-            <li key={step.title} className="flex gap-4">
-              <span className="bg-clay-soft text-clay flex size-10 shrink-0 items-center justify-center rounded-full font-semibold">
-                {i + 1}
-              </span>
-              <div>
-                <h3 className="text-lg font-semibold">{step.title}</h3>
-                <p className="text-ink-muted mt-1 text-base">{step.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="bg-ink text-paper">
-        <div className="mx-auto max-w-2xl px-6 py-12">
-          <h2 className="font-serif text-3xl font-medium">Built to listen, not to judge</h2>
-          <ul className="mt-6 space-y-3">
-            {promises.map((p) => (
-              <li key={p} className="flex gap-3 text-lg">
-                <span aria-hidden className="bg-clay-soft mt-2.5 size-1.5 shrink-0 rounded-full" />
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-2xl px-6 py-12">
-        <h2 className="font-serif text-3xl font-medium">For members, too</h2>
-        <p className="text-ink-muted mt-3 text-lg">
-          Ask for a Wednesday note and you get your own words back midweek, with the passage and one
-          question from your pastor. A sermon that lasts past Sunday.
-        </p>
-        <ButtonLink href="/demo" full className="mt-8">
-          See it with a demo church
-        </ButtonLink>
-      </section>
-
-      <footer className="border-line border-t">
-        <div className="text-ink-subtle mx-auto flex max-w-2xl flex-wrap justify-between gap-2 px-6 py-6 text-sm">
-          <span>What Stuck. Built for the AI for Church Hackathon 2026.</span>
-          <Link href="/login" className="hover:text-ink">
+    <div className="flex-1">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-6">
+        <Link href="/" aria-label="What Stuck home">
+          <Logo />
+        </Link>
+        <nav aria-label="Main" className="flex items-center gap-1 text-base font-medium">
+          <Link
+            href="/demo"
+            className="text-ink-muted hover:text-ink hidden min-h-11 items-center rounded-lg px-3 sm:flex"
+          >
+            See the demo
+          </Link>
+          <Link
+            href="/login"
+            className="text-ink-muted hover:text-ink flex min-h-11 items-center rounded-lg px-3"
+          >
             Sign in
           </Link>
+        </nav>
+      </header>
+
+      <main>
+        <section className="mx-auto grid w-full max-w-6xl items-center gap-14 px-6 pt-14 pb-20 lg:grid-cols-[1.1fr_1fr] lg:pt-20">
+          <div>
+            <p className="text-clay text-sm font-semibold tracking-[0.12em] uppercase">
+              For pastors and the people they preach to
+            </p>
+            <h1 className="mt-5 font-serif text-[2.75rem] leading-[1.04] font-medium tracking-[-0.02em] sm:text-[3.75rem]">
+              Find out what your church{" "}
+              <span className="relative whitespace-nowrap">
+                actually
+                <svg
+                  aria-hidden
+                  viewBox="0 0 200 12"
+                  preserveAspectRatio="none"
+                  className="text-clay absolute -bottom-1 left-0 h-3 w-full"
+                >
+                  <path
+                    d="M2 9c40-6 95-8 196-3"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>{" "}
+              took home from Sunday.
+            </h1>
+            <p className="text-ink-muted mt-6 max-w-xl text-xl leading-relaxed">
+              Pastors preach every week and hear &ldquo;good sermon&rdquo; at the door. What Stuck
+              asks the room one question after the sermon, and on Monday shows you what landed, what
+              drifted, and who might need you.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href="/demo" className={buttonPrimary}>
+                Open the demo church
+              </Link>
+              <Link href="/login" className={buttonSecondary}>
+                Start for your church
+              </Link>
+            </div>
+            <p className="text-ink-subtle mt-4 text-sm">
+              Free. Nothing to install. Works on any phone.
+            </p>
+          </div>
+
+          <div className="relative mx-auto flex w-full max-w-[520px] justify-center lg:justify-end">
+            <PhoneReply />
+            <ReportSlice className="absolute -bottom-16 left-0 hidden sm:block lg:-left-10" />
+          </div>
+        </section>
+
+        <section aria-label="Scripture" className="border-line bg-surface border-y">
+          <figure className="mx-auto max-w-3xl px-6 py-16 text-center sm:py-20">
+            <blockquote className="font-serif text-[1.75rem] leading-snug font-medium tracking-[-0.01em] sm:text-[2.25rem]">
+              &ldquo;Consequently, faith comes by hearing, and hearing by the word of Christ.&rdquo;
+            </blockquote>
+            <figcaption className="text-ink-subtle mt-5 text-base">
+              Romans 10:17, Berean Standard Bible
+            </figcaption>
+            <p className="text-ink-muted mx-auto mt-8 max-w-xl text-lg">
+              Preaching is half of a conversation. What Stuck gives you the other half: what people
+              actually heard.
+            </p>
+          </figure>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24">
+          <p className="text-clay text-sm font-semibold tracking-[0.12em] uppercase">
+            How a week works
+          </p>
+          <h2 className="mt-3 max-w-2xl font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
+            Three moments. About two minutes of your time.
+          </h2>
+          <ol className="mt-12 grid gap-12 lg:grid-cols-3 lg:gap-8">
+            {week.map((step) => (
+              <li key={step.day} className="flex flex-col">
+                <div className="border-ink flex items-baseline gap-3 border-t-2 pt-4">
+                  <span className="font-serif text-2xl font-medium">{step.day}</span>
+                </div>
+                <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
+                <p className="text-ink-muted mt-2 text-base leading-relaxed">{step.body}</p>
+                <div className="mt-6">
+                  {step.shot === "slide" ? (
+                    <SlideShot />
+                  ) : step.shot === "report" ? (
+                    <ReportShot />
+                  ) : (
+                    <EmailShot />
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="bg-ink text-paper">
+          <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24">
+            <p className="text-clay-soft/80 text-sm font-semibold tracking-[0.12em] uppercase">
+              Built to listen, not to judge
+            </p>
+            <h2 className="mt-3 max-w-2xl font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
+              AI does the sorting. You keep the shepherding.
+            </h2>
+            <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-16">
+              <div>
+                <h3 className="border-paper/20 text-paper/70 border-b pb-3 text-base font-semibold">
+                  What it does
+                </h3>
+                <ul className="mt-2">
+                  {does.map((item) => (
+                    <li key={item} className="border-paper/10 border-b py-4 text-lg leading-snug">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="border-paper/20 text-paper/70 border-b pb-3 text-base font-semibold">
+                  What it never does
+                </h3>
+                <ul className="mt-2">
+                  {never.map((item) => (
+                    <li
+                      key={item}
+                      className="border-paper/10 text-paper/85 border-b py-4 text-lg leading-snug"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 py-20 sm:py-24 lg:grid-cols-2">
+          <div>
+            <p className="text-clay text-sm font-semibold tracking-[0.12em] uppercase">
+              For your deacons and care team
+            </p>
+            <h2 className="mt-3 font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
+              Sometimes what stuck is a cry for help.
+            </h2>
+            <p className="text-ink-muted mt-4 text-lg leading-relaxed">
+              When a reply sounds like someone is hurting, they see crisis help right away, and your
+              church&apos;s care line. On Monday it&apos;s the first thing in the report, so your
+              team can name care from the front the next Sunday. It stays anonymous.
+            </p>
+          </div>
+          <div className="border-care/15 bg-care-soft rounded-2xl border p-6">
+            <p className="text-care text-base font-semibold">One reply may need your care</p>
+            <p className="text-ink-muted mt-1 text-sm">
+              Anonymous. They saw 988 and your care contact when they sent it.
+            </p>
+            <div className="bg-surface mt-4 rounded-xl px-4 py-3 font-serif text-lg leading-snug">
+              &ldquo;Honestly I don&apos;t see the point of anything anymore.&rdquo;
+            </div>
+          </div>
+        </section>
+
+        <section className="border-line border-t">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-6 py-16 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-serif text-[2rem] leading-tight font-medium">
+                See it with a real-looking church.
+              </h2>
+              <p className="text-ink-muted mt-2 text-lg">
+                Three Sundays of replies, real AI reports, nothing to sign up for.
+              </p>
+            </div>
+            <Link href="/demo" className={buttonPrimary}>
+              Open the demo church
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-line border-t">
+        <div className="text-ink-subtle mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm">
+          <Logo size={22} />
+          <p>Built for the AI for Church Hackathon 2026.</p>
+          <nav aria-label="Footer" className="flex gap-4">
+            <Link href="/demo" className="hover:text-ink">
+              Demo
+            </Link>
+            <Link href="/login" className="hover:text-ink">
+              Sign in
+            </Link>
+          </nav>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }
