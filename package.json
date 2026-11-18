@@ -56,5 +56,10 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "overrides": {
+    "@axe-core/playwright": {
+      "playwright-core": "1.63.0"
+    }
   }
 }
