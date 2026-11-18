@@ -1,11 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import {
-  EmailShot,
-  PhoneReply,
-  ReportShot,
-  ReportSlice,
-  SlideShot,
-} from "@/components/landing/product-shots";
+import { EmailShot, PhoneReply, ReportShot, SlideShot } from "@/components/landing/product-shots";
 import { Logo } from "@/components/logo";
 import { OliveBranch, Sparkle } from "@/components/landing/ornaments";
 
@@ -111,18 +106,28 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[540px]">
-              <div className="bg-sage-deep ring-gold/25 relative overflow-hidden rounded-[36px] px-6 pt-10 pb-0 ring-1 sm:px-10">
-                <OliveBranch className="text-gold/60 pointer-events-none absolute -bottom-6 -left-8 w-40" />
-                <Sparkle className="text-gold/70 absolute top-8 left-8" />
-                <Sparkle size={8} className="text-gold/60 absolute top-16 left-16" />
-                <div className="relative flex justify-end">
-                  <div className="translate-y-6">
-                    <PhoneReply />
-                  </div>
+            <div className="relative mx-auto w-full max-w-[560px] pb-24 sm:pb-10">
+              <OliveBranch className="text-gold/70 pointer-events-none absolute -top-10 -left-14 hidden w-36 sm:block" />
+              <figure className="relative ml-auto w-[78%] sm:w-[72%]">
+                <div className="ring-gold/25 overflow-hidden rounded-[36px] ring-1">
+                  <Image
+                    src="/images/hero-pew.webp"
+                    alt="A woman sits in a church pew after the service, typing what stuck with her on her phone, while others talk in the aisle."
+                    width={896}
+                    height={1120}
+                    priority
+                    sizes="(min-width: 1024px) 400px, 72vw"
+                    className="h-auto w-full"
+                  />
                 </div>
+                <figcaption className="bg-paper/90 text-ink-muted absolute top-3 right-3 rounded-full px-2.5 py-1 text-[11px]">
+                  Illustrative photo, made with AI
+                </figcaption>
+              </figure>
+              <div className="absolute bottom-0 left-0 w-[260px] origin-bottom-left scale-[0.62] sm:scale-[0.82]">
+                <PhoneReply />
               </div>
-              <ReportSlice className="absolute -bottom-12 left-[-12px] hidden sm:block lg:-left-10" />
+              <Sparkle className="text-gold/70 absolute top-6 left-[18%] hidden sm:block" />
             </div>
           </section>
         </main>
