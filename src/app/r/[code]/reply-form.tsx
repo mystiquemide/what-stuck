@@ -58,7 +58,23 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
       <Page>
         {header}
         <div className="flex flex-1 flex-col justify-center py-10">
-          <div aria-hidden className="bg-clay-soft size-14 rounded-full" />
+          <div
+            aria-hidden
+            className="bg-clay-soft text-clay flex size-14 items-center justify-center rounded-full"
+          >
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </div>
           <Heading className="mt-6">Thank you.</Heading>
           <Eyebrow className="mt-6">You said</Eyebrow>
           <Quote className="mt-2">{sent.takeaway}</Quote>
