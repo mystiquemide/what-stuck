@@ -18,7 +18,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "eval:reports": "tsx --conditions=react-server scripts/eval-reports.ts",
-    "db:seed-reports": "tsx --conditions=react-server scripts/seed-reports.ts"
+    "db:seed-reports": "tsx --conditions=react-server scripts/seed-reports.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
@@ -34,6 +35,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^22.20.5",
     "@types/qrcode": "^1.5.6",

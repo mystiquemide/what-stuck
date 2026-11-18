@@ -44,3 +44,7 @@ next-env.d.ts
 
 # local eval results
 /eval-output
+
+# end-to-end test output
+/test-results
+/playwright-report
