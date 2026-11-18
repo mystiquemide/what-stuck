@@ -2,14 +2,16 @@ import { AnthropicReflectionDrafter, AnthropicReportModel } from "./model-anthro
 import { GeminiReflectionDrafter, GeminiReportModel } from "./model-gemini";
 import type { ReflectionDrafter, ReportModel } from "./model";
 
-export type AiConfig = Partial<Record<string, string | undefined>> & {
+export type AiConfig = {
+  [key: string]: unknown;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
   ANTHROPIC_API_KEY?: string;
   ANTHROPIC_MODEL?: string;
 };
 
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+export const DEFAULT_GEMINI_MODEL =
+  "gemini-2.5-flash,gemini-3-flash-preview,gemini-flash-lite-latest";
 export const DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-5-5";
 
 /** Gemini when its key is set, otherwise Claude. Null when neither is configured. */

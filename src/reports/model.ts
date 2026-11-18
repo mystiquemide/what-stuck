@@ -8,6 +8,8 @@ export type ModelResult = {
   output: ModelOutput | null;
   /** "end_turn" when complete; "refusal" and "max_tokens" mean the output can't be trusted. */
   stopReason: string | null;
+  /** The model that actually answered, when a provider falls back between models. */
+  model?: string;
 };
 
 /** The one thing the report needs from an LLM. Tests and evals swap in their own. */

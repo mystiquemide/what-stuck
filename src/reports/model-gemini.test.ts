@@ -38,7 +38,7 @@ describe("GeminiReportModel", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
     const result = await model.run("SYSTEM", "USER", 4000);
-    expect(result).toEqual({ output, stopReason: "end_turn" });
+    expect(result).toEqual({ output, stopReason: "end_turn", model: "gemini-test" });
 
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toContain("/models/gemini-test:generateContent");
@@ -55,7 +55,7 @@ describe("GeminiReportModel", () => {
       "fetch",
       vi.fn(async () => reply(candidate("MAX_TOKENS", [{ text: '{"alig' }]))),
     );
-    expect(await model.run("s", "u", 10)).toEqual({ output: null, stopReason: "max_tokens" });
+    expect(await model.run("s", "u", 10)).toMatchObject({ output: null, stopReason: "max_tokens" });
   });
 
   it("reports a safety block as a refusal", async () => {
@@ -76,7 +76,10 @@ describe("GeminiReportModel", () => {
       "fetch",
       vi.fn(async () => reply(candidate("STOP", [{ text: '{"themes": "nope"}' }]))),
     );
-    expect(await model.run("s", "u", 10)).toEqual({ output: null, stopReason: "parse_error" });
+    expect(await model.run("s", "u", 10)).toMatchObject({
+      output: null,
+      stopReason: "parse_error",
+    });
   });
 
   it("retries rate limits, then succeeds", async () => {
@@ -91,6 +94,37 @@ describe("GeminiReportModel", () => {
     expect((await pending).stopReason).toBe("end_turn");
     expect(fetchMock).toHaveBeenCalledTimes(2);
     vi.useRealTimers();
+  });
+
+  it("moves to the next model when one is out of daily quota, and says which answered", async () => {
+    const fallback = new GeminiReportModel("test-key", "first-model, second-model");
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        reply(
+          {
+            error: {
+              status: "RESOURCE_EXHAUSTED",
+              details: [{ quotaId: "GenerateRequestsPerDayPerProjectPerModel-FreeTier" }],
+            },
+          },
+          429,
+        ),
+      )
+      .mockResolvedValueOnce(reply(candidate("STOP", [{ text: JSON.stringify(output) }])));
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await fallback.run("s", "u", 10);
+    expect(result).toEqual({ output, stopReason: "end_turn", model: "second-model" });
+    expect(String(fetchMock.mock.calls[1]![0])).toContain("/models/second-model:");
+  });
+
+  it("gives up cleanly when every model is out of quota", async () => {
+    const fallback = new GeminiReportModel("test-key", "a,b");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => reply({ error: { status: "RESOURCE_EXHAUSTED" } }, 429)),
+    );
+    await expect(fallback.run("s", "u", 10)).rejects.toThrow(/out of quota/);
   });
 
   it("fails fast on a bad key without leaking the response body", async () => {

@@ -84,7 +84,10 @@ export async function seedDemo(db: Database, { replace = false, now = new Date()
  * Real AI reports for demo sermons that don't have one yet, so visitors see
  * genuine output rather than hand-written examples.
  */
-export async function generateDemoReports(db: Database, getModel: () => ReportModel) {
+export async function generateDemoReports(
+  db: Database,
+  getModel: () => ReportModel | Promise<ReportModel>,
+) {
   const missing = await db
     .select({ id: sermons.id, churchId: sermons.churchId })
     .from(sermons)

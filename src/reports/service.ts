@@ -44,7 +44,7 @@ export async function generateReport(
   viewer: Viewer | null,
   sermonId: string,
   /** Called only when there are enough replies, so setup errors don't mask "too few". */
-  getModel: () => ReportModel,
+  getModel: () => ReportModel | Promise<ReportModel>,
 ): Promise<GenerateResult> {
   const sermon = await getSermonForViewer(db, viewer, sermonId);
   assertCanWrite(viewer, sermon.churchId);
@@ -54,7 +54,7 @@ export async function generateReport(
     return { status: "too_few", replyCount: replies.length };
   }
 
-  const model = getModel();
+  const model = await getModel();
   const idMap = new Map(replies.map((r, i) => [`r${i + 1}`, r.id]));
   const user = buildUserMessage(
     sermon,
@@ -98,7 +98,7 @@ export async function generateReport(
       .values({
         sermonId,
         status: "ready",
-        model: model.name,
+        model: result.model ?? model.name,
         promptVersion: PROMPT_VERSION,
         body: grounded.body,
         responseCount: replies.length,

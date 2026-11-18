@@ -5,6 +5,7 @@ import { getEnv } from "@/lib/env";
 import { assertSameOrigin, uuidParam } from "@/lib/http";
 import { route } from "@/lib/route";
 import { getReportModel } from "@/reports/model";
+import { spendAi } from "@/reports/budget";
 import { generateReport, getReport } from "@/reports/service";
 import { getSermonForViewer } from "@/sermons/service";
 
@@ -26,7 +27,16 @@ export const POST = route(async (request: Request, ctx: Ctx) => {
   const sermon = await getSermonForViewer(db, viewer, id);
   assertCanWrite(viewer, sermon.churchId);
 
-  const result = await generateReport(db, viewer, id, getReportModel);
+  const env = getEnv();
+  const result = await generateReport(db, viewer, id, async () => {
+    const model = getReportModel();
+    await spendAi(db, env.IP_HASH_SALT, "report", {
+      churchId: sermon.churchId,
+      sermonId: sermon.id,
+      siteDailyLimit: env.AI_DAILY_LIMIT,
+    });
+    return model;
+  });
   const status = result.status === "ready" ? 201 : result.status === "failed" ? 502 : 200;
   return Response.json(result, { status });
 });

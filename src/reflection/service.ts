@@ -21,12 +21,12 @@ export async function draftReflection(
   db: Database,
   viewer: Viewer | null,
   sermonId: string,
-  getDrafter: () => ReflectionDrafter,
+  getDrafter: () => ReflectionDrafter | Promise<ReflectionDrafter>,
 ) {
   const sermon = await getSermonForViewer(db, viewer, sermonId);
   assertCanWrite(viewer, sermon.churchId);
 
-  const drafter = getDrafter();
+  const drafter = await getDrafter();
   const question = await drafter
     .draft(REFLECTION_SYSTEM_PROMPT, reflectionUserMessage(sermon))
     .catch((error: unknown) => {

@@ -16,7 +16,11 @@ const MAX_PER_RUN = 20;
  */
 export async function runMondayReports(
   db: Database,
-  deps: { mailer: Mailer; appUrl: string; getModel: () => ReportModel },
+  deps: {
+    mailer: Mailer;
+    appUrl: string;
+    getModel: () => ReportModel | Promise<ReportModel>;
+  },
   now = new Date(),
 ) {
   const since = new Date(now.getTime() - LOOKBACK_DAYS * 86_400_000).toISOString().slice(0, 10);
@@ -44,12 +48,14 @@ export async function runMondayReports(
 
   const summary = { generated: 0, failed: 0, emailed: 0 };
   for (const sermon of due) {
-    const result = await generateReport(
-      db,
-      systemViewer(sermon.churchId),
-      sermon.id,
-      deps.getModel,
-    );
+    let result;
+    try {
+      result = await generateReport(db, systemViewer(sermon.churchId), sermon.id, deps.getModel);
+    } catch (error) {
+      // Usually the daily AI cap. Stop for today; the next run picks up where this left off.
+      console.warn("[reports] Monday run stopped", error instanceof Error ? error.message : error);
+      break;
+    }
     if (result.status !== "ready") {
       summary.failed++;
       continue;

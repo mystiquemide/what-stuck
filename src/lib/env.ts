@@ -18,9 +18,15 @@ const envSchema = z.object({
 
   // AI: Gemini is used when its key is set, otherwise Claude.
   GEMINI_API_KEY: z.string().min(1).optional(),
-  GEMINI_MODEL: z.string().min(1).default("gemini-2.5-flash"),
+  GEMINI_MODEL: z
+    .string()
+    .min(1)
+    .default("gemini-2.5-flash,gemini-3-flash-preview,gemini-flash-lite-latest"),
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
   ANTHROPIC_MODEL: z.string().min(1).default("claude-sonnet-5-5"),
+
+  /** Hard cap on AI calls per day across the whole site, to protect our credit. */
+  AI_DAILY_LIMIT: z.coerce.number().int().positive().default(50),
 
   RESEND_API_KEY: z.string().min(1).optional(),
   EMAIL_FROM: z.string().min(3).optional(),

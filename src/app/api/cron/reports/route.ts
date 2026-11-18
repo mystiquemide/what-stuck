@@ -4,6 +4,7 @@ import { assertCron } from "@/lib/cron";
 import { getMailer } from "@/lib/email";
 import { getEnv } from "@/lib/env";
 import { route } from "@/lib/route";
+import { spendSiteBudget } from "@/reports/budget";
 import { getReportModel } from "@/reports/model";
 
 /** Monday morning: build reports and email pastors. */
@@ -13,7 +14,11 @@ export const POST = route(async (request: Request) => {
   const result = await runMondayReports(getDb(), {
     mailer: getMailer(),
     appUrl: env.APP_URL,
-    getModel: getReportModel,
+    getModel: async () => {
+      const model = getReportModel();
+      await spendSiteBudget(getDb(), env.IP_HASH_SALT, env.AI_DAILY_LIMIT);
+      return model;
+    },
   });
   return Response.json(result);
 });

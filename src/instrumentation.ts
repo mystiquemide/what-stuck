@@ -34,7 +34,12 @@ export async function register() {
 
   if (enabled.ai) {
     const { getReportModel } = await import("@/reports/model");
-    void generateDemoReports(db, getReportModel)
+    const { spendSiteBudget } = await import("@/reports/budget");
+    void generateDemoReports(db, async () => {
+      const model = getReportModel();
+      await spendSiteBudget(db, env.IP_HASH_SALT, env.AI_DAILY_LIMIT);
+      return model;
+    })
       .then(
         (statuses) =>
           statuses.length && console.info(`[startup] Demo reports: ${statuses.join(", ")}`),
