@@ -12,6 +12,12 @@ const bodySchema = z.object({
   timezone: z
     .string()
     .refine((tz) => Intl.supportedValuesOf("timeZone").includes(tz), "Pick a valid time zone."),
+  careContact: z
+    .string()
+    .trim()
+    .max(120)
+    .optional()
+    .transform((v) => v || null),
 });
 
 function slugify(name: string) {
@@ -33,7 +39,12 @@ export const POST = route(async (request: Request) => {
   const db = getDb();
   if (await staffViewer(db, user)) throw new HttpError(409, "You already have a church set up.");
 
-  const { name, timezone } = await readJson(request, bodySchema);
-  const church = await createChurchForUser(db, user.id, { name, timezone, slug: slugify(name) });
+  const { name, timezone, careContact } = await readJson(request, bodySchema);
+  const church = await createChurchForUser(db, user.id, {
+    name,
+    timezone,
+    careContact,
+    slug: slugify(name),
+  });
   return Response.json({ church: { id: church.id, name: church.name } }, { status: 201 });
 });

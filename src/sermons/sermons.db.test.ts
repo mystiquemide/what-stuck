@@ -187,6 +187,7 @@ describe.skipIf(!hasTestDb)("replies", () => {
     const pub = await getPublicSermon(db, sermon.publicCode);
     expect(Object.keys(pub!).sort()).toEqual(
       [
+        "churchCareContact",
         "churchName",
         "churchTimezone",
         "id",

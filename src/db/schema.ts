@@ -34,6 +34,8 @@ export const churches = pgTable("churches", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   timezone: text("timezone").notNull().default("America/Chicago"),
+  /** Shown to a member whose reply suggests they need help, next to crisis lines. */
+  careContact: text("care_contact"),
   isDemo: boolean("is_demo").notNull().default(false),
   createdAt: createdAt(),
 });

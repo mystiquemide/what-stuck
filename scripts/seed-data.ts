@@ -21,6 +21,7 @@ export const demoChurch = {
   name: "Hope Street Church",
   slug: DEMO_CHURCH_SLUG,
   timezone: "America/Chicago",
+  careContact: "Pastoral care line: (555) 014-2200",
 };
 
 export const demoSeriesTitle = "Philippians: Unfinished";

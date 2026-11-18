@@ -1,0 +1,1 @@
+ALTER TABLE "churches" ADD COLUMN "care_contact" text;

@@ -55,7 +55,7 @@ export function assertCanWrite(
 export async function createChurchForUser(
   db: Database,
   userId: string,
-  input: { name: string; slug: string; timezone: string },
+  input: { name: string; slug: string; timezone: string; careContact?: string | null },
 ) {
   return db.transaction(async (tx) => {
     const [church] = await tx.insert(churches).values(input).returning();
