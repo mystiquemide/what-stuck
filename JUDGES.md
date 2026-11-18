@@ -8,10 +8,10 @@ Five minutes, with a phone and a laptop. Everything here works on the live site 
 
 1. On your laptop, open the site and click **Open the demo church**, then open **Pressing On**.
 2. Scan the QR code with your phone. This is what a member sees on the screen at the end of the sermon.
-3. Type what stuck with you and send it. You get a thank-you with your own words and a verse.
-4. Optional: send a reply like "I don't see the point of anything anymore." You'll see the 988 Lifeline and the church's care contact straight away. This is what a hurting member sees.
+3. Type what stuck with you and send it. You get a thank-you with your own words, a verse, and the church's connect card as a next step.
+4. Optional: send a reply like "I don't see the point of anything anymore." You'll see the 988 Lifeline, the church's care contact, and an "Ask someone to reach out" button that opens the church's own care form. This is what a hurting member sees.
 
-Back on the laptop, refresh **Pressing On** and the reply count goes up. The demo church is shared and its replies are made up, so please keep it kind.
+Watch the laptop: the reply count on **Pressing On** goes up within about 10 seconds, without a reload. The demo church is shared and its replies are made up, so please keep it kind.
 
 ## 2. Be the pastor on Monday (laptop, 2 minutes)
 
@@ -38,17 +38,29 @@ Members who tick "Send my words back to me on Wednesday" get one email. It holds
 
 ![Member reply, thank-you, and the Wednesday note](docs/screens/member.webp)
 
+## 5. The church's own tools (1 minute)
+
+What Stuck hands people on to the tools a church already uses, instead of keeping them in its own system.
+
+- **Settings** (top of any pastor page): the care form and connect card links. A church pastes in its MinistryForms prayer form, a Genesis ChMS form or an In The Bulletin connect card. In the demo they open sample pages that explain where a real church's form would go.
+- **For your digital bulletin** on the **Pressing On** page: button text, the reply link and an announcement to paste into In The Bulletin, so people who missed the screen can still reply.
+- **Scripture:** every verse is quoted from the faith.tools Bible SDK and cited as BSB. The full Berean Standard Bible notice is in the site footer and the Wednesday email.
+
+The README maps What Stuck to each of the [faith.tools guardrails for AI apps](README.md#faithfulness-and-responsible-ai).
+
 ## Where to look in the code
 
-| Claim                                                   | File                                                       |
-| ------------------------------------------------------- | ---------------------------------------------------------- |
-| Quotes and counts can't be invented                     | [`src/reports/grounding.ts`](src/reports/grounding.ts)     |
-| Replies are data, never instructions                    | [`src/reports/prompt.ts`](src/reports/prompt.ts)           |
-| Eval set: injection, Spanish, crisis, drift and more    | [`src/reports/evals/cases.ts`](src/reports/evals/cases.ts) |
-| Care check at send time, English and Spanish            | [`src/replies/care.ts`](src/replies/care.ts)               |
-| Scripture from the Bible SDK, never generated           | [`src/scripture/passage.ts`](src/scripture/passage.ts)     |
-| AI budget and rate limits                               | [`src/reports/budget.ts`](src/reports/budget.ts)           |
-| Demo church is read-only, churches can't see each other | [`src/auth/access.ts`](src/auth/access.ts)                 |
+| Claim                                                   | File                                                            |
+| ------------------------------------------------------- | --------------------------------------------------------------- |
+| Quotes and counts can't be invented                     | [`src/reports/grounding.ts`](src/reports/grounding.ts)          |
+| Replies are data, never instructions                    | [`src/reports/prompt.ts`](src/reports/prompt.ts)                |
+| Eval set: injection, Spanish, crisis, drift and more    | [`src/reports/evals/cases.ts`](src/reports/evals/cases.ts)      |
+| Care check at send time, English and Spanish            | [`src/replies/care.ts`](src/replies/care.ts)                    |
+| Scripture from the Bible SDK, never generated           | [`src/scripture/passage.ts`](src/scripture/passage.ts)          |
+| AI budget and rate limits                               | [`src/reports/budget.ts`](src/reports/budget.ts)                |
+| Demo church is read-only, churches can't see each other | [`src/auth/access.ts`](src/auth/access.ts)                      |
+| Care and connect form links, https only, owner only     | [`src/churches/settings.ts`](src/churches/settings.ts)          |
+| Bulletin kit                                            | [`bulletin-kit.tsx`](src/app/app/sermons/[id]/bulletin-kit.tsx) |
 
 ## Good to know
 
