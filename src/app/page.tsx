@@ -88,9 +88,7 @@ export default function Home() {
           <section className="mx-auto grid w-full max-w-6xl items-center gap-14 px-6 pt-14 pb-24 lg:grid-cols-[1fr_1fr] lg:pt-16">
             <div>
               <h1 className="text-ink font-serif text-[3.5rem] leading-[0.95] font-semibold tracking-[-0.01em] uppercase sm:text-[5.25rem]">
-                Hear
-                <br />
-                what stuck
+                <span className="block">Hear</span> <span className="block">what stuck</span>
               </h1>
               <p className="text-ink mt-6 text-[0.95rem] font-semibold tracking-[0.18em] uppercase sm:text-base">
                 What your church took home from Sunday
