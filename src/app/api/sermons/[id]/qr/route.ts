@@ -1,7 +1,8 @@
 import { getViewer } from "@/auth/session";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
-import { route, uuidParam } from "@/lib/http";
+import { uuidParam } from "@/lib/http";
+import { route } from "@/lib/route";
 import { qrPng, qrSvg } from "@/sermons/qr";
 import { getSermonForViewer, publicReplyUrl } from "@/sermons/service";
 

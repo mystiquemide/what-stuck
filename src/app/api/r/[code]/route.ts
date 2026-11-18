@@ -1,7 +1,8 @@
 import { getDb } from "@/db";
 import { PUBLIC_CODE_PATTERN } from "@/lib/codes";
 import { getEnv } from "@/lib/env";
-import { clientIp, HttpError, notFound, readJson, route } from "@/lib/http";
+import { clientIp, HttpError, notFound, readJson } from "@/lib/http";
+import { route } from "@/lib/route";
 import { checkRateLimit, RULES } from "@/lib/rate-limit";
 import { replySchema, submitReply } from "@/replies/service";
 import { getPublicSermon } from "@/sermons/service";

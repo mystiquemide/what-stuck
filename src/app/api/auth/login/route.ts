@@ -4,7 +4,8 @@ import { getDb } from "@/db";
 import { loginEmail } from "@/emails/login";
 import { getMailer } from "@/lib/email";
 import { getEnv } from "@/lib/env";
-import { assertSameOrigin, clientIp, HttpError, readJson, route } from "@/lib/http";
+import { assertSameOrigin, clientIp, HttpError, readJson } from "@/lib/http";
+import { route } from "@/lib/route";
 import { checkRateLimit, RULES } from "@/lib/rate-limit";
 
 const bodySchema = z.object({ email: emailSchema });

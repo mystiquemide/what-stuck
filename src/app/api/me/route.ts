@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getCurrentUser, getViewer } from "@/auth/session";
 import { getDb, schema } from "@/db";
-import { route } from "@/lib/http";
+import { route } from "@/lib/route";
 
 export const GET = route(async () => {
   const viewer = await getViewer();

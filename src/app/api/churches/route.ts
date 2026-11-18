@@ -4,7 +4,8 @@ import { getCurrentUser } from "@/auth/session";
 import { getDb } from "@/db";
 import { generatePublicCode } from "@/lib/codes";
 import { getEnv } from "@/lib/env";
-import { assertSameOrigin, HttpError, readJson, route, unauthorized } from "@/lib/http";
+import { assertSameOrigin, HttpError, readJson, unauthorized } from "@/lib/http";
+import { route } from "@/lib/route";
 
 const bodySchema = z.object({
   name: z.string().trim().min(2, "Enter your church's name.").max(100),

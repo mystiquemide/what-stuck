@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { assertSameOrigin, clientIp, HttpError, readJson, route } from "./http";
+import { assertSameOrigin, clientIp, HttpError, readJson } from "./http";
+import { route } from "./route";
 
 describe("route", () => {
   it("turns HttpError into JSON with its status", async () => {

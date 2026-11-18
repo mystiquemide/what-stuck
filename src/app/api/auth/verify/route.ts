@@ -4,7 +4,8 @@ import { redeemLoginToken } from "@/auth/magic-link";
 import { setSessionCookie } from "@/auth/session";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
-import { assertSameOrigin, HttpError, readJson, route } from "@/lib/http";
+import { assertSameOrigin, HttpError, readJson } from "@/lib/http";
+import { route } from "@/lib/route";
 
 const bodySchema = z.object({ token: z.string().min(20).max(200) });
 

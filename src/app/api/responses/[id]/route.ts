@@ -2,7 +2,8 @@ import { z } from "zod";
 import { getViewer } from "@/auth/session";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
-import { assertSameOrigin, readJson, route, uuidParam } from "@/lib/http";
+import { assertSameOrigin, readJson, uuidParam } from "@/lib/http";
+import { route } from "@/lib/route";
 import { setReplyHidden } from "@/replies/service";
 
 const bodySchema = z.object({ hidden: z.boolean() });

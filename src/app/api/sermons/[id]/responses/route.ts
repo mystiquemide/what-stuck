@@ -1,6 +1,7 @@
 import { getViewer } from "@/auth/session";
 import { getDb } from "@/db";
-import { route, uuidParam } from "@/lib/http";
+import { uuidParam } from "@/lib/http";
+import { route } from "@/lib/route";
 import { listReplies } from "@/replies/service";
 
 export const GET = route(

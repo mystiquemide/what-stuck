@@ -1,7 +1,8 @@
 import { getViewer } from "@/auth/session";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
-import { assertSameOrigin, readJson, route } from "@/lib/http";
+import { assertSameOrigin, readJson } from "@/lib/http";
+import { route } from "@/lib/route";
 import { createSeriesSchema } from "@/sermons/schemas";
 import { createSeries, listSeries } from "@/sermons/service";
 
