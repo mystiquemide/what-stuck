@@ -30,6 +30,8 @@ Built for the [AI for Church Hackathon 2026](https://aiforchurch.com/hackathon),
 
 ## Try it
 
+**Live:** [whatstuck.midelabs.xyz](https://whatstuck.midelabs.xyz)
+
 Open the demo church from the home page. It's a made-up church with made-up replies, read-only, and you can send a reply from your phone and watch it arrive.
 
 ## Tech

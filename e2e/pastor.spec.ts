@@ -34,7 +34,8 @@ test("report page lists every reply, word for word", async ({ page }) => {
   await page.getByRole("link", { name: /Not Finished Yet/ }).click();
   await page.getByRole("link", { name: "Read what stuck" }).click();
   await expect(page.getByRole("heading", { name: "Every reply" })).toBeVisible();
-  await expect(page.getByText("God isn't finished with me yet. I needed that.")).toBeVisible();
+  const everyReply = page.getByRole("region", { name: "Every reply" });
+  await expect(everyReply.getByText("God isn't finished with me yet. I needed that.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Hide" })).toHaveCount(0);
   await expectAccessible(page);
 });
