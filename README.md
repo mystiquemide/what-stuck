@@ -12,6 +12,10 @@ The only sermon feedback most pastors get is "Good sermon, Pastor" at the door. 
 
 What Stuck gives everyone in the room ten seconds and one honest question. The pastor gets a clear picture of what landed, and members get their own words back in the middle of the week, so Sunday keeps working after Sunday.
 
+## Who it's for
+
+Pastors and teaching teams at small and mid-size churches, the ones without a research budget or a staff member to run surveys. It needs a screen or a printed QR code, and people with phones. Care teams and small-group leaders get something too: the replies that need care, and questions to discuss.
+
 ## A week with What Stuck
 
 | When             | Who                  | What happens                                                                                                                                     |
@@ -38,6 +42,58 @@ What Stuck gives everyone in the room ten seconds and one honest question. The p
 | Flags replies that may need care, alongside a word check that runs the moment a reply is sent | Asks for names, or keeps email addresses longer than 14 days                                                             |
 
 Members see "Anonymous. Your pastor reads every reply. AI helps sort them." before they send. Every reply is shown word for word in the report, so the pastor can always check the AI against the source.
+
+## How a report is made
+
+```mermaid
+flowchart TB
+  subgraph People
+    M["Member's phone"]
+    P["Pastor's browser"]
+  end
+  subgraph App["What Stuck: Next.js in Docker"]
+    R["Reply page and API<br/>rate limit + care check"]
+    W["Pastor pages<br/>magic-link sign-in"]
+    J["Report job<br/>AI budget, model call, grounding"]
+    N["Wednesday notes job"]
+    C["Cleanup job"]
+  end
+  subgraph Data
+    DB[("Postgres")]
+  end
+  subgraph Services["Outside services"]
+    AI["Gemini, or Claude<br/>schema-constrained JSON"]
+    BIB["faith.tools Bible SDK<br/>BSB passage text"]
+    MAIL["Resend<br/>email"]
+  end
+  subgraph Host["Dokploy"]
+    S["Scheduler"]
+  end
+  S -->|"Monday 7 AM"| J
+  S -->|"every 15 min"| N
+  S -->|"daily"| C
+  M -->|"reply"| R
+  R -.->|"988 + care contact, if needed"| M
+  R --> DB
+  P <--> W
+  W <--> DB
+  W -->|"Build report"| J
+  J <--> AI
+  J --> DB
+  DB --> N
+  N --> BIB
+  N --> MAIL
+  MAIL -->|"own words + passage + approved question"| M
+  C -->|"delete emails after 14 days"| DB
+```
+
+1. Replies get short stand-in IDs, and they go to the model as quoted data next to the pastor's intended point.
+2. The model returns JSON in a fixed shape: how close the room got, themes, drift, questions with small-group prompts, and care flags. Each item cites the reply IDs behind it.
+3. The server maps the IDs back to real replies. Anything citing a reply that doesn't exist is dropped, and every count comes from the real replies, never from the model's prose.
+4. Care flags from the check at send time are always kept, even if the model misses them.
+5. The report is saved with the model and prompt version, and the pastor can read every reply under it.
+
+In the demo church, "Not Finished Yet" turned 26 replies into 3 themes, 1 drift, 4 questions for next Sunday and 1 reply flagged for care.
 
 ## Care comes first
 
