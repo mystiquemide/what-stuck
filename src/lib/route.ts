@@ -3,6 +3,19 @@ import { unstable_rethrow } from "next/navigation";
 import { z } from "zod";
 import { HttpError } from "./http";
 
+const UNREADABLE = "We couldn't read that. Refresh the page and try again.";
+
+/**
+ * Our schemas carry plain-language messages. Anything that still has a
+ * library default ("Invalid input: expected string") gets a calm fallback,
+ * so people never see technical wording.
+ */
+export function friendlyMessage(message: string) {
+  return /^(Invalid|Too (big|small)|Expected|Unrecognized|Required)/i.test(message)
+    ? "Check this answer and try again."
+    : message;
+}
+
 /**
  * Wraps a route handler: known errors become clean JSON, anything else is
  * logged on the server and returned as a generic 500 with no internals.
@@ -20,16 +33,22 @@ export function route<Args extends unknown[]>(
         return Response.json({ error: error.message, ...error.extra }, { status: error.status });
       }
       if (error instanceof z.ZodError) {
+        const fields = error.issues
+          .filter((i) => i.path.length > 0)
+          .map((i) => ({ path: i.path.join("."), message: friendlyMessage(i.message) }));
         return Response.json(
           {
-            error: "Some fields need another look.",
-            fields: error.issues.map((i) => ({ path: i.path.join("."), message: i.message })),
+            error: fields.length ? "Check the highlighted answers and try again." : UNREADABLE,
+            fields,
           },
           { status: 400 },
         );
       }
       console.error("[route] unexpected error", error);
-      return Response.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+      return Response.json(
+        { error: "Something went wrong on our side. Try again in a moment." },
+        { status: 500 },
+      );
     }
   };
 }

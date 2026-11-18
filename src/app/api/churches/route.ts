@@ -36,7 +36,8 @@ export const POST = route(async (request: Request) => {
   if (!user) throw unauthorized();
 
   const db = getDb();
-  if (await staffViewer(db, user)) throw new HttpError(409, "You already have a church set up.");
+  if (await staffViewer(db, user))
+    throw new HttpError(409, "You already have a church set up. Head to your sermons.");
 
   const { name, timezone, careContact } = await readJson(request, bodySchema);
   const church = await createChurchForUser(db, user.id, {

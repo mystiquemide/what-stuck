@@ -26,12 +26,18 @@ export async function draftReflection(
   const sermon = await getSermonForViewer(db, viewer, sermonId);
   assertCanWrite(viewer, sermon.churchId);
 
-  const question = await getDrafter().draft(
-    REFLECTION_SYSTEM_PROMPT,
-    reflectionUserMessage(sermon),
-  );
+  const drafter = getDrafter();
+  const question = await drafter
+    .draft(REFLECTION_SYSTEM_PROMPT, reflectionUserMessage(sermon))
+    .catch((error: unknown) => {
+      console.error("[reflection] draft failed", error instanceof Error ? error.message : error);
+      return null;
+    });
   if (!question)
-    throw new HttpError(502, "The AI couldn't suggest a question. Try again or write your own.");
+    throw new HttpError(
+      502,
+      "We couldn't suggest a question this time. Try again, or write your own.",
+    );
 
   await db
     .update(sermons)

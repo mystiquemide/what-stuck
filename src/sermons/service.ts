@@ -61,7 +61,7 @@ async function assertSeriesInChurch(
     .select({ id: series.id })
     .from(series)
     .where(and(eq(series.id, seriesId), eq(series.churchId, churchId)));
-  if (!found) throw new HttpError(400, "That series doesn't exist.");
+  if (!found) throw new HttpError(400, "That series isn't available anymore. Pick another one.");
 }
 
 /** Postgres unique-violation, whether the driver error is thrown directly or wrapped. */

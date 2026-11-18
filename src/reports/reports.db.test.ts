@@ -129,6 +129,23 @@ describe.skipIf(!hasTestDb)("generateReport", () => {
     expect(page.report?.body).toBeNull();
   });
 
+  it("survives an AI outage with a calm message for the pastor", async () => {
+    const { viewer, sermon } = await sermonWith(["a", "b", "c"]);
+    const failing: ReportModel = {
+      name: "down",
+      run: async () => {
+        throw new Error("Gemini request failed (HTTP 503).");
+      },
+    };
+    const errorLog = console.error;
+    console.error = () => {};
+    const result = await generateReport(db, viewer, sermon.id, () => failing);
+    console.error = errorLog;
+    expect(result.status).toBe("failed");
+    expect(result.status === "failed" && result.reason).toMatch(/^We couldn't build the report/);
+    expect((await getReport(db, viewer, sermon.id)).report?.error).toContain("HTTP 503");
+  });
+
   it("keeps hidden replies out of the prompt", async () => {
     const { viewer, sermon, ids } = await sermonWith([
       "keep one",

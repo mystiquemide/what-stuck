@@ -19,7 +19,11 @@ export const POST = route(async (request: Request) => {
   const db = getDb();
 
   const result = await redeemLoginToken(db, token);
-  if (!result) throw new HttpError(400, "This sign-in link has expired or was already used.");
+  if (!result)
+    throw new HttpError(
+      400,
+      "This link has already been used or has expired. Sign-in links work once and last 15 minutes.",
+    );
 
   await setSessionCookie(result.sessionToken, result.expiresAt);
   const viewer = await staffViewer(db, result.user);

@@ -8,7 +8,7 @@ export const LOGIN_TOKEN_TTL_MS = 15 * 60_000;
 export const SESSION_TTL_MS = 30 * 24 * 60 * 60_000;
 
 export const emailSchema = z
-  .email("Enter a valid email address.")
+  .email("Enter an email address like name@example.com.")
   .max(254)
   .transform((value) => value.trim().toLowerCase());
 

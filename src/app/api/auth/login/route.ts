@@ -22,9 +22,13 @@ export const POST = route(async (request: Request) => {
   ] as const) {
     const limit = await checkRateLimit(db, env.IP_HASH_SALT, rule, identity);
     if (!limit.allowed) {
-      throw new HttpError(429, "Too many sign-in attempts. Try again in a few minutes.", {
-        retryAfterSeconds: limit.retryAfterSeconds,
-      });
+      throw new HttpError(
+        429,
+        "You've asked for a lot of sign-in links. Wait 15 minutes, then try again.",
+        {
+          retryAfterSeconds: limit.retryAfterSeconds,
+        },
+      );
     }
   }
 

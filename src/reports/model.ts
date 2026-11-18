@@ -24,7 +24,10 @@ export function getReportModel(): ReportModel {
   const env = getEnv();
   const model = features(env).ai ? createReportModel(env) : null;
   if (!model)
-    throw new HttpError(503, "AI reports aren't set up yet. Ask your admin to add the AI key.");
+    throw new HttpError(
+      503,
+      "Reports aren't switched on for this site yet. Your replies are saved and you can read them below.",
+    );
   return model;
 }
 
@@ -34,7 +37,7 @@ export function getReflectionDrafter(): ReflectionDrafter {
   if (!drafter) {
     throw new HttpError(
       503,
-      "AI drafting isn't set up yet. You can still write the question yourself.",
+      "Suggestions aren't switched on yet. You can write the question yourself.",
     );
   }
   return drafter;

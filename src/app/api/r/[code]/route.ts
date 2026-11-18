@@ -44,9 +44,13 @@ export const POST = route(async (request: Request, ctx: Ctx) => {
     `${clientIp(request)}:${code}`,
   );
   if (!limit.allowed) {
-    throw new HttpError(429, "That's a lot of replies at once. Please wait a minute.", {
-      retryAfterSeconds: limit.retryAfterSeconds,
-    });
+    throw new HttpError(
+      429,
+      "You've sent a lot of replies in a row. Wait a minute, then try again.",
+      {
+        retryAfterSeconds: limit.retryAfterSeconds,
+      },
+    );
   }
 
   const input = await readJson(request, replySchema);

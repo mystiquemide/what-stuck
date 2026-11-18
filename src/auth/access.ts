@@ -32,7 +32,7 @@ export async function demoViewer(db: Database): Promise<Viewer> {
     .from(churches)
     .where(and(eq(churches.slug, DEMO_CHURCH_SLUG), eq(churches.isDemo, true)))
     .limit(1);
-  if (!church) throw notFound("The demo church hasn't been set up.");
+  if (!church) throw notFound("The demo church isn't ready yet. Try again in a minute.");
   return { kind: "demo", churchId: church.id, canWrite: false };
 }
 
@@ -49,7 +49,10 @@ export function assertCanWrite(
   churchId: string,
 ): asserts viewer is Extract<Viewer, { kind: "staff" }> {
   assertCanRead(viewer, churchId);
-  if (!viewer.canWrite) throw forbidden("The demo is read-only.");
+  if (!viewer.canWrite)
+    throw forbidden(
+      "This is a demo church, so changes are turned off. Start your own church to try it.",
+    );
 }
 
 export async function createChurchForUser(

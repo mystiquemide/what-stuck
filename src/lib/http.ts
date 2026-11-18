@@ -12,10 +12,12 @@ export class HttpError extends Error {
   }
 }
 
-export const unauthorized = () => new HttpError(401, "Please sign in.");
+export const unauthorized = () =>
+  new HttpError(401, "Your sign-in has ended. Sign in again to keep going.");
 export const forbidden = (message = "You don't have access to this.") =>
   new HttpError(403, message);
-export const notFound = (what = "Not found.") => new HttpError(404, what);
+export const notFound = (what = "We couldn't find that. It may have been removed.") =>
+  new HttpError(404, what);
 
 /** Parse a JSON body against a schema. Bad JSON and bad shapes both become a 400. */
 export async function readJson<T extends z.ZodType>(
@@ -26,7 +28,7 @@ export async function readJson<T extends z.ZodType>(
   try {
     body = await request.json();
   } catch {
-    throw new HttpError(400, "Request body must be JSON.");
+    throw new HttpError(400, "We couldn't read that. Refresh the page and try again.");
   }
   return schema.parse(body);
 }
@@ -38,7 +40,9 @@ export async function readJson<T extends z.ZodType>(
 export function assertSameOrigin(request: Request, appUrl: string): void {
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(appUrl).origin) {
-    throw forbidden("Cross-site request blocked.");
+    throw forbidden(
+      "For your safety, this only works from the What Stuck site. Refresh the page and try again.",
+    );
   }
 }
 

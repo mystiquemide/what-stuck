@@ -8,6 +8,10 @@ import type { ReportModel } from "./model";
 import { buildUserMessage, PROMPT_VERSION, SYSTEM_PROMPT } from "./prompt";
 import type { ReportBody } from "./schema";
 
+/** Shown to pastors when a report can't be built. The technical reason is kept for us in `reports.error`. */
+export const REPORT_FAILED_MESSAGE =
+  "We couldn't build the report this time. Your replies are all safe below. Try again in a few minutes.";
+
 /** Below this, patterns aren't real. The pastor just reads the replies. */
 export const MIN_REPLIES_FOR_REPORT = 3;
 const BASE_MAX_TOKENS = 4_000;
@@ -60,7 +64,15 @@ export async function generateReport(
 
   let failure = "The AI didn't return a usable report.";
   for (let attempt = 1; attempt <= 2; attempt++) {
-    const result = await model.run(SYSTEM_PROMPT, user, BASE_MAX_TOKENS * attempt);
+    let result: Awaited<ReturnType<ReportModel["run"]>>;
+    try {
+      result = await model.run(SYSTEM_PROMPT, user, BASE_MAX_TOKENS * attempt);
+    } catch (error) {
+      // Provider outage, timeout or rate limit. Logged for us, never shown raw.
+      failure = `Model call failed: ${error instanceof Error ? error.message : String(error)}`;
+      console.error("[reports] model call failed", sermonId, failure);
+      continue;
+    }
 
     if (result.stopReason === "refusal") {
       failure = "The AI declined to summarize these replies.";
@@ -106,7 +118,7 @@ export async function generateReport(
       error: failure,
     })
     .returning({ id: reports.id });
-  return { status: "failed", reportId: row!.id, reason: failure };
+  return { status: "failed", reportId: row!.id, reason: REPORT_FAILED_MESSAGE };
 }
 
 /** The latest report plus every reply, so the page can show real quotes and the raw list. */

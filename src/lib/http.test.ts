@@ -23,6 +23,24 @@ describe("route", () => {
     expect(JSON.stringify(await res.json())).not.toContain("hunter2");
   });
 
+  it("never shows library default wording", async () => {
+    const res = await route(async (req: Request) => {
+      await readJson(req, z.object({ count: z.number() }));
+      return Response.json({});
+    })(new Request("http://x", { method: "POST", body: JSON.stringify({ count: "x" }) }));
+    const body = await res.json();
+    expect(JSON.stringify(body)).not.toMatch(/expected|Invalid input/i);
+    expect(body.fields[0].message).toBe("Check this answer and try again.");
+  });
+
+  it("explains an unreadable request in plain words", async () => {
+    const res = await route(async (req: Request) => {
+      await readJson(req, z.object({ a: z.string() }));
+      return Response.json({});
+    })(new Request("http://x", { method: "POST", body: JSON.stringify("just text") }));
+    expect((await res.json()).error).toBe("We couldn't read that. Refresh the page and try again.");
+  });
+
   it("turns validation failures into a 400 with field names", async () => {
     const res = await route(async (req: Request) => {
       await readJson(req, z.object({ email: z.email() }));

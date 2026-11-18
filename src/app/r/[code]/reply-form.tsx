@@ -105,7 +105,7 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
       return;
     }
     if (wantsNote && !email.trim()) {
-      setErrors({ email: "Add your email, or uncheck the Wednesday note." });
+      setErrors({ email: "Add your email, or untick the Wednesday note." });
       return;
     }
     setSending(true);

@@ -9,7 +9,7 @@ import { getDb } from "@/db";
 import { formatSermonDate, plural } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import type { ReportBody } from "@/reports/schema";
-import { getReport } from "@/reports/service";
+import { getReport, REPORT_FAILED_MESSAGE } from "@/reports/service";
 import { GenerateButton } from "./generate-button";
 import { ReplyList } from "./reply-list";
 import { YouAsked } from "./you-asked";
@@ -69,9 +69,7 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
             ) : report?.status === "failed" ? (
               <>
                 <p className="text-lg font-semibold">The last report didn&apos;t work.</p>
-                <p className="text-ink-muted mt-1 text-base">
-                  {report.error} Every reply is still below.
-                </p>
+                <p className="text-ink-muted mt-1 text-base">{REPORT_FAILED_MESSAGE}</p>
               </>
             ) : (
               <>
@@ -89,7 +87,7 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
             )}
             {canGenerate && !viewer.canWrite && (
               <p className="text-ink-subtle mt-3 text-sm">
-                The demo is read-only, so reports can&apos;t be rebuilt here.
+                This is a demo church, so reports can&apos;t be rebuilt here.
               </p>
             )}
           </Card>
