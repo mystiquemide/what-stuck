@@ -1,4 +1,4 @@
-import { demoSermons } from "../../../scripts/seed-data";
+import { demoSermons } from "@/demo/seed-data";
 
 /**
  * Eval set for the report prompt. Each case is a sermon with made-up replies

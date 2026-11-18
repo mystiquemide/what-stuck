@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createLoginToken, emailSchema } from "@/auth/magic-link";
 import { getDb } from "@/db";
 import { loginEmail } from "@/emails/login";
-import { getMailer } from "@/lib/email";
+import { EmailNotConfiguredError, getMailer } from "@/lib/email";
 import { getEnv } from "@/lib/env";
 import { assertSameOrigin, clientIp, HttpError, readJson } from "@/lib/http";
 import { route } from "@/lib/route";
@@ -30,7 +30,14 @@ export const POST = route(async (request: Request) => {
 
   const token = await createLoginToken(db, email);
   const link = `${env.APP_URL}/auth/verify?token=${encodeURIComponent(token)}`;
-  await getMailer().send(loginEmail(email, link));
+  try {
+    await getMailer().send(loginEmail(email, link));
+  } catch (error) {
+    if (error instanceof EmailNotConfiguredError) {
+      throw new HttpError(503, "Sign-in by email isn't set up yet. Try the demo church for now.");
+    }
+    throw error;
+  }
 
   // Same answer whether or not the address has an account.
   return Response.json({ ok: true });

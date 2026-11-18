@@ -16,7 +16,7 @@
     "prepare": "git config core.hooksPath .githooks || true",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
-    "db:seed": "tsx scripts/seed.ts",
+    "db:seed": "tsx --conditions=react-server scripts/seed.ts",
     "eval:reports": "tsx --conditions=react-server scripts/eval-reports.ts",
     "db:seed-reports": "tsx --conditions=react-server scripts/seed-reports.ts",
     "test:e2e": "playwright test"

@@ -4,7 +4,7 @@
  * a prompt-injection attempt, and one reply that needs pastoral care.
  */
 
-import { DEMO_CHURCH_SLUG } from "../src/lib/demo";
+import { DEMO_CHURCH_SLUG } from "@/lib/demo";
 
 export type SeedReply = { takeaway: string; question?: string; care?: boolean };
 
