@@ -12,6 +12,7 @@ import { formatSermonDate, plural } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import type { ReportBody } from "@/reports/schema";
 import { getReport, REPORT_FAILED_MESSAGE } from "@/reports/service";
+import { CareFollowUp } from "./care-follow-up";
 import { GenerateButton } from "./generate-button";
 import { ReplyList } from "./reply-list";
 import { YouAsked } from "./you-asked";
@@ -19,16 +20,14 @@ import { YouAsked } from "./you-asked";
 export const metadata: Metadata = { title: "What stuck" };
 
 const alignmentCopy = {
-  close: { label: "Close", tone: "olive", line: "Most people heard what you meant." },
+  close: { label: "Close", tone: "olive" },
   partial: {
     label: "Partly",
     tone: "amber",
-    line: "Some heard it. Others heard something nearby.",
   },
   different: {
     label: "Mostly something else",
     tone: "clay",
-    line: "Most heard something other than your point.",
   },
 } as const;
 
@@ -126,12 +125,19 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
                     These are anonymous. The person saw crisis resources and your care contact when
                     they sent it. Consider naming care openly from the front this Sunday.
                   </p>
-                  <ul className="mt-3 space-y-2">
+                  <ul className="mt-3 space-y-4">
                     {body.care.map((c) => {
                       const reply = byId.get(c.replyId);
                       return reply ? (
                         <li key={c.replyId}>
                           <Quote className="border-care/20">{reply.takeaway}</Quote>
+                          <CareFollowUp
+                            replyId={reply.id}
+                            canWrite={viewer.canWrite}
+                            handledAt={reply.careHandledAt?.toISOString() ?? null}
+                            handledBy={reply.careHandledByEmail}
+                            note={reply.careNote}
+                          />
                         </li>
                       ) : null;
                     })}
@@ -154,11 +160,7 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
                     {alignmentCopy[body.alignment.level].label}
                   </Chip>
                 </div>
-                <p className="mt-2 text-lg font-medium">
-                  {alignmentCopy[body.alignment.level].line}
-                </p>
-                <p className="text-ink-muted mt-1 text-base">{body.alignment.reason}</p>
-                <p className="text-ink mt-4 font-serif text-lg leading-snug">{body.summary}</p>
+                <p className="mt-2 font-serif text-lg leading-snug">{body.alignment.reason}</p>
               </Card>
             </section>
 

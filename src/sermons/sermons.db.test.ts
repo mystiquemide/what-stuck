@@ -1,7 +1,14 @@
 import { afterAll, describe, expect, it } from "vitest";
 import type { Viewer } from "@/auth/access";
 import { HttpError } from "@/lib/http";
-import { replySchema, setReplyHidden, submitReply } from "@/replies/service";
+import {
+  careFollowUpSchema,
+  replySchema,
+  setCareFollowUp,
+  setReplyHidden,
+  submitReply,
+} from "@/replies/service";
+import { getReport } from "@/reports/service";
 import { hasTestDb, makeStaff, testDb } from "../../test/db";
 import { createSermonSchema } from "./schemas";
 import {
@@ -128,6 +135,51 @@ describe.skipIf(!hasTestDb)("replies", () => {
     );
     expect(result.care).toBe(true);
     expect((await getSermonForViewer(db, viewer, sermon.id)).careCount).toBe(1);
+  });
+
+  it("lets the team mark a care reply as followed up, and undo it", async () => {
+    const pastor = await makeStaff(db);
+    const stranger = await makeStaff(db);
+    const sermon = await createSermon(db, pastor.viewer, sermonInput);
+    await submitReply(
+      db,
+      sermon,
+      replySchema.parse({ takeaway: "I don't see the point of anything anymore" }),
+    );
+    const [reply] = (await getReport(db, pastor.viewer, sermon.id)).replies;
+
+    expect(
+      await statusOf(
+        setCareFollowUp(
+          db,
+          stranger.viewer,
+          reply!.id,
+          careFollowUpSchema.parse({ handled: true }),
+        ),
+      ),
+    ).toBe(404);
+
+    await setCareFollowUp(
+      db,
+      pastor.viewer,
+      reply!.id,
+      careFollowUpSchema.parse({ handled: true, note: "Named care from the front." }),
+    );
+    const [handled] = (await getReport(db, pastor.viewer, sermon.id)).replies;
+    expect(handled?.careHandledAt).toBeInstanceOf(Date);
+    expect(handled?.careNote).toBe("Named care from the front.");
+    expect(handled?.careHandledByEmail).toBe(pastor.user.email);
+    expect((await getSermonForViewer(db, pastor.viewer, sermon.id)).careCount).toBe(0);
+
+    await setCareFollowUp(
+      db,
+      pastor.viewer,
+      reply!.id,
+      careFollowUpSchema.parse({ handled: false }),
+    );
+    const [undone] = (await getReport(db, pastor.viewer, sermon.id)).replies;
+    expect(undone?.careHandledAt).toBeNull();
+    expect((await getSermonForViewer(db, pastor.viewer, sermon.id)).careCount).toBe(1);
   });
 
   it("quietly drops bot submissions", async () => {

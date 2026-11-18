@@ -150,6 +150,11 @@ export const responses = pgTable(
     takeaway: text("takeaway").notNull(),
     question: text("question"),
     careFlag: boolean("care_flag").notNull().default(false),
+    /** When someone on the church team followed up on a reply that may need care. */
+    careHandledAt: timestamp("care_handled_at", { withTimezone: true }),
+    careHandledBy: uuid("care_handled_by").references(() => users.id, { onDelete: "set null" }),
+    /** A short team note, such as "Named care from the front". Never shown to members. */
+    careNote: text("care_note"),
     hidden: boolean("hidden").notNull().default(false),
     createdAt: createdAt(),
   },

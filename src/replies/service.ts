@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { assertCanWrite, requireViewer, type Viewer } from "@/auth/access";
 import { emailSchema } from "@/auth/magic-link";
@@ -130,4 +130,63 @@ export async function setReplyHidden(
   assertCanWrite(viewer, row.churchId);
 
   await db.update(responses).set({ hidden }).where(eq(responses.id, responseId));
+}
+
+export const careFollowUpSchema = z.object({
+  handled: z.boolean(),
+  note: z
+    .string()
+    .trim()
+    .max(200, "Keep the note under 200 characters.")
+    .optional()
+    .transform((v) => v || null),
+});
+
+/**
+ * Someone on the church team marks that a reply that may need care was followed up,
+ * for example by naming care from the front or by the care team praying. Undo clears it.
+ */
+export async function setCareFollowUp(
+  db: Database,
+  viewer: Viewer | null,
+  responseId: string,
+  input: z.output<typeof careFollowUpSchema>,
+) {
+  requireViewer(viewer);
+  const [row] = await db
+    .select({ churchId: sermons.churchId })
+    .from(responses)
+    .innerJoin(sermons, eq(sermons.id, responses.sermonId))
+    .where(eq(responses.id, responseId));
+  if (!row) throw notFound();
+  assertCanWrite(viewer, row.churchId);
+
+  await db
+    .update(responses)
+    .set(
+      input.handled
+        ? { careHandledAt: new Date(), careHandledBy: viewer.user.id, careNote: input.note }
+        : { careHandledAt: null, careHandledBy: null, careNote: null },
+    )
+    .where(eq(responses.id, responseId));
+}
+
+/**
+ * A recent reply to show in the Wednesday email preview. The caller must already have
+ * checked that the viewer can read this sermon. Care replies are never used as the sample.
+ */
+export async function sampleReplyText(db: Database, sermonId: string): Promise<string | null> {
+  const [row] = await db
+    .select({ takeaway: responses.takeaway })
+    .from(responses)
+    .where(
+      and(
+        eq(responses.sermonId, sermonId),
+        eq(responses.hidden, false),
+        eq(responses.careFlag, false),
+      ),
+    )
+    .orderBy(desc(responses.createdAt))
+    .limit(1);
+  return row?.takeaway ?? null;
 }

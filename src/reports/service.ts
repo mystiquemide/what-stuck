@@ -1,7 +1,7 @@
 import { and, asc, desc, eq } from "drizzle-orm";
 import { assertCanWrite, type Viewer } from "@/auth/access";
 import type { Database } from "@/db";
-import { reports, responses } from "@/db/schema";
+import { reports, responses, users } from "@/db/schema";
 import { getSermonForViewer } from "@/sermons/service";
 import { groundOutput } from "./grounding";
 import type { ReportModel } from "./model";
@@ -137,10 +137,14 @@ export async function getReport(db: Database, viewer: Viewer | null, sermonId: s
       takeaway: responses.takeaway,
       question: responses.question,
       careFlag: responses.careFlag,
+      careHandledAt: responses.careHandledAt,
+      careHandledByEmail: users.email,
+      careNote: responses.careNote,
       hidden: responses.hidden,
       createdAt: responses.createdAt,
     })
     .from(responses)
+    .leftJoin(users, eq(users.id, responses.careHandledBy))
     .where(eq(responses.sermonId, sermonId))
     .orderBy(asc(responses.createdAt));
 

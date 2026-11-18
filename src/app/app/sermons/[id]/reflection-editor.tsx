@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, Chip, ErrorText, Eyebrow } from "@/components/ui";
+import { escapeHtml } from "@/emails/html";
 import { api } from "@/lib/client-api";
 
 /**
@@ -13,16 +14,22 @@ export function ReflectionEditor({
   initialQuestion,
   initiallyApproved,
   canWrite,
+  notePreview,
+  questionMarker,
 }: {
   sermonId: string;
   initialQuestion: string | null;
   initiallyApproved: boolean;
   canWrite: boolean;
+  /** The real Wednesday email HTML, with `questionMarker` where the question goes. */
+  notePreview: string;
+  questionMarker: string;
 }) {
   const [question, setQuestion] = useState(initialQuestion ?? "");
   const [approvedText, setApprovedText] = useState(initiallyApproved ? initialQuestion : null);
   const [busy, setBusy] = useState<"draft" | "approve" | null>(null);
   const [error, setError] = useState<string>();
+  const [showPreview, setShowPreview] = useState(false);
   const approved = approvedText !== null && approvedText === question;
 
   async function draft() {
@@ -91,6 +98,25 @@ export function ReflectionEditor({
           </Button>
         </div>
       )}
+      <details className="no-print mt-4" onToggle={(e) => setShowPreview(e.currentTarget.open)}>
+        <summary className="text-clay min-h-11 cursor-pointer py-2 text-base font-medium">
+          Preview the Wednesday email
+        </summary>
+        <p className="text-ink-muted mt-1 text-sm">
+          This is the email a member gets, with a recent reply standing in for their words.
+        </p>
+        {showPreview && (
+          <iframe
+            title="Preview of the Wednesday email"
+            sandbox=""
+            srcDoc={notePreview.replace(
+              questionMarker,
+              escapeHtml(question.trim() || "Your approved question appears here."),
+            )}
+            className="rounded-card border-line mt-3 h-[34rem] w-full border bg-white"
+          />
+        )}
+      </details>
     </Card>
   );
 }

@@ -37,6 +37,10 @@ test("report page lists every reply, word for word", async ({ page }) => {
   const everyReply = page.getByRole("region", { name: "Every reply" });
   await expect(everyReply.getByText("God isn't finished with me yet. I needed that.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Hide" })).toHaveCount(0);
+  // The demo reports are rebuilt by the real model after a fresh seed, so they may still be on their way.
+  if (await page.locator("#care").count()) {
+    await expect(page.getByText(/care team marks this once someone has followed up/)).toBeVisible();
+  }
   await expectAccessible(page);
 });
 
@@ -55,10 +59,20 @@ test("church settings show where members go next, read-only in the demo", async 
   await expectAccessible(page);
 });
 
+test("sermon page previews the real Wednesday email", async ({ page }) => {
+  await openDemo(page);
+  await page.getByRole("link", { name: /Pressing On/ }).first().click();
+  await page.getByText("Preview the Wednesday email").click();
+  const email = page.frameLocator('iframe[title="Preview of the Wednesday email"]');
+  await expect(email.getByText("Hope Street Church · Pressing On")).toBeVisible();
+  await expect(email.getByText(/From Philippians 3:12-14/)).toBeVisible();
+});
+
 test("sermon page has a bulletin kit while taking replies", async ({ page }) => {
   await openDemo(page);
   await page.getByRole("link", { name: /Pressing On/ }).first().click();
   await expect(page.getByText("For your digital bulletin")).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy an announcement" })).toBeVisible();
+
   await expectAccessible(page);
 });

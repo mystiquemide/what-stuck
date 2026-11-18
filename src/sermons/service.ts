@@ -8,7 +8,7 @@ import type { CreateSermonInput, UpdateSermonInput } from "./schemas";
 
 const replyCounts = {
   replyCount: sql<number>`count(${responses.id}) filter (where not ${responses.hidden})::int`,
-  careCount: sql<number>`count(${responses.id}) filter (where ${responses.careFlag} and not ${responses.hidden})::int`,
+  careCount: sql<number>`count(${responses.id}) filter (where ${responses.careFlag} and ${responses.careHandledAt} is null and not ${responses.hidden})::int`,
   questionCount: sql<number>`count(${responses.question}) filter (where not ${responses.hidden})::int`,
 };
 

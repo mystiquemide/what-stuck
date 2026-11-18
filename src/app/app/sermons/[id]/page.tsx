@@ -11,12 +11,17 @@ import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
 import { formatSermonDate, plural } from "@/lib/format";
 import { HttpError } from "@/lib/http";
+import { wednesdayNote } from "@/emails/wednesday-note";
+import { sampleReplyText } from "@/replies/service";
+import { getPassage } from "@/scripture/passage";
 import { getSermonForViewer, publicReplyUrl } from "@/sermons/service";
 import { BulletinKit } from "./bulletin-kit";
 import { ReflectionEditor } from "./reflection-editor";
 import { ShareActions } from "./share-actions";
 
 export const metadata: Metadata = { title: "Sermon" };
+
+const QUESTION_MARKER = "__WHAT_STUCK_QUESTION__";
 
 export default async function SermonPage({ params }: PageProps<"/app/sermons/[id]">) {
   const viewer = await requirePastorPage();
@@ -28,6 +33,21 @@ export default async function SermonPage({ params }: PageProps<"/app/sermons/[id
   });
   const churchName = await getChurchName(db, viewer.churchId);
   const replyUrl = publicReplyUrl(getEnv().APP_URL, sermon.publicCode);
+  const [sample, passage] = await Promise.all([
+    sampleReplyText(db, sermon.id),
+    getPassage(sermon.scriptureRef),
+  ]);
+  // The real email, with a marker where the question goes so the preview follows the editor.
+  const notePreview =
+    wednesdayNote({
+      to: "member@example.com",
+      churchName,
+      sermonTitle: sermon.title,
+      takeaway: sample ?? "Each member sees their own words here, exactly as they wrote them.",
+      reflectionQuestion: QUESTION_MARKER,
+      passage,
+      unsubscribeUrl: "#",
+    }).html ?? "";
 
   return (
     <>
@@ -85,6 +105,8 @@ export default async function SermonPage({ params }: PageProps<"/app/sermons/[id
           initialQuestion={sermon.reflectionQuestion}
           initiallyApproved={Boolean(sermon.reflectionApprovedAt)}
           canWrite={viewer.canWrite}
+          notePreview={notePreview}
+          questionMarker={QUESTION_MARKER}
         />
       </Page>
     </>
