@@ -43,10 +43,19 @@ export function ButtonLink({
   );
 }
 
-export function Card({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div className={cx("rounded-card border-line bg-surface border p-5", className)} {...props} />
-  );
+const cardTones = {
+  default: "border-line bg-surface",
+  clay: "border-clay/25 bg-clay-soft",
+  care: "border-care/20 bg-care-soft",
+  amber: "border-amber/20 bg-amber-soft",
+} as const;
+
+export function Card({
+  className,
+  tone = "default",
+  ...props
+}: ComponentProps<"div"> & { tone?: keyof typeof cardTones }) {
+  return <div className={cx("rounded-card border p-5", cardTones[tone], className)} {...props} />;
 }
 
 type Tone = "clay" | "olive" | "amber" | "care" | "neutral";

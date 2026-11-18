@@ -4,14 +4,13 @@ import { getCurrentUser } from "@/auth/session";
 import { getDb } from "@/db";
 import { generatePublicCode } from "@/lib/codes";
 import { getEnv } from "@/lib/env";
+import { isValidTimeZone } from "@/lib/timezone";
 import { assertSameOrigin, HttpError, readJson, unauthorized } from "@/lib/http";
 import { route } from "@/lib/route";
 
 const bodySchema = z.object({
   name: z.string().trim().min(2, "Enter your church's name.").max(100),
-  timezone: z
-    .string()
-    .refine((tz) => Intl.supportedValuesOf("timeZone").includes(tz), "Pick a valid time zone."),
+  timezone: z.string().max(64).refine(isValidTimeZone, "Pick a valid time zone."),
   careContact: z
     .string()
     .trim()

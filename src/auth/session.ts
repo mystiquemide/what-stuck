@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { cookies } from "next/headers";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
@@ -38,6 +39,8 @@ export async function signOut() {
 }
 
 export async function getCurrentUser() {
+  // Sessions are checked against the clock, so this always runs per request.
+  await connection();
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   return token ? findSessionUser(getDb(), token) : null;
 }
