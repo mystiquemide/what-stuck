@@ -4,6 +4,8 @@
  * a prompt-injection attempt, and one reply that needs pastoral care.
  */
 
+import { DEMO_CHURCH_SLUG } from "../src/lib/demo";
+
 export type SeedReply = { takeaway: string; question?: string; care?: boolean };
 
 export type SeedSermon = {
@@ -17,7 +19,7 @@ export type SeedSermon = {
 
 export const demoChurch = {
   name: "Hope Street Church",
-  slug: "hope-street-demo",
+  slug: DEMO_CHURCH_SLUG,
   timezone: "America/Chicago",
 };
 
