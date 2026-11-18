@@ -3,6 +3,7 @@ import Link from "next/link";
 import { EmailShot, PhoneReply, ReportShot, SlideShot } from "@/components/landing/product-shots";
 import { Logo } from "@/components/logo";
 import { OliveBranch, Sparkle } from "@/components/landing/ornaments";
+import { Verse, VERSES } from "@/components/verse";
 
 const week = [
   {
@@ -150,12 +151,36 @@ export default function Home() {
         </section>
 
         <section className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24">
-          <p className="text-clay text-sm font-semibold tracking-[0.12em] uppercase">
-            How a week works
-          </p>
-          <h2 className="mt-3 max-w-2xl font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
-            Three moments. About two minutes of your time.
-          </h2>
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
+            <div>
+              <p className="text-clay text-sm font-semibold tracking-[0.12em] uppercase">
+                How a week works
+              </p>
+              <h2 className="mt-3 max-w-xl font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
+                Three moments. About two minutes of your time.
+              </h2>
+              <p className="text-ink-muted mt-4 max-w-lg text-lg leading-relaxed">
+                You keep preaching the way you do. What Stuck just listens at the door, so the week
+                after Sunday has something to work with.
+              </p>
+            </div>
+            <figure className="relative">
+              <div className="ring-gold/25 overflow-hidden rounded-[28px] ring-1">
+                <Image
+                  src="/images/bible-pew.webp"
+                  alt="An open Bible on a church pew beside handwritten sermon notes and a pencil, in morning light."
+                  width={1168}
+                  height={880}
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="h-auto w-full"
+                />
+              </div>
+              <figcaption className="bg-paper/90 text-ink-muted absolute top-3 right-3 rounded-full px-2.5 py-1 text-[11px]">
+                Illustrative photo, made with AI
+              </figcaption>
+              <OliveBranch className="text-gold/70 pointer-events-none absolute -bottom-8 -left-8 hidden w-28 sm:block" />
+            </figure>
+          </div>
           <ol className="mt-12 grid gap-12 lg:grid-cols-3 lg:gap-8">
             {week.map((step) => (
               <li key={step.day} className="flex flex-col">
@@ -243,24 +268,44 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-line border-t">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-6 py-16 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="font-serif text-[2rem] leading-tight font-medium">
-                See it with a real-looking church.
+        <section className="bg-sage">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-6 py-20 sm:py-24 lg:grid-cols-2">
+            <figure className="relative order-2 lg:order-1">
+              <div className="ring-gold/25 overflow-hidden rounded-[28px] ring-1">
+                <Image
+                  src="/images/bible-morning.webp"
+                  alt="An open Bible on a kitchen table with a cup of coffee, a sprig of olive leaves and a phone, in morning light."
+                  width={1168}
+                  height={880}
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className="h-auto w-full"
+                />
+              </div>
+              <figcaption className="bg-paper/90 text-ink-muted absolute top-3 right-3 rounded-full px-2.5 py-1 text-[11px]">
+                Illustrative photo, made with AI
+              </figcaption>
+              <Sparkle className="text-gold/70 absolute -top-4 -right-2" />
+            </figure>
+            <div className="order-1 lg:order-2">
+              <h2 className="font-serif text-[2.25rem] leading-tight font-medium tracking-[-0.015em]">
+                Let the conversation keep going after Sunday.
               </h2>
-              <p className="text-ink-muted mt-2 text-lg">
-                Three Sundays of replies, real AI reports, nothing to sign up for.
+              <p className="text-ink-muted mt-4 text-lg leading-relaxed">
+                See it with a real-looking church: three Sundays of replies and real AI reports.
+                Nothing to sign up for.
               </p>
+              <div className="mt-8">
+                <Link href="/demo" className={pillPrimary}>
+                  Open the demo church
+                </Link>
+              </div>
+              <Verse className="mt-12 max-w-lg" {...VERSES.dwell} />
             </div>
-            <Link href="/demo" className={pillPrimary}>
-              Open the demo church
-            </Link>
           </div>
         </section>
       </main>
 
-      <footer className="border-line border-t">
+      <footer className="bg-sage border-gold/20 border-t">
         <div className="text-ink-subtle mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm">
           <Logo size={22} />
           <p>Built for the AI for Church Hackathon 2026.</p>

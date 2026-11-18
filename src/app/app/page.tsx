@@ -4,6 +4,7 @@ import { requirePastorPage } from "@/auth/page";
 import { getChurchName } from "@/churches/queries";
 import { AppHeader } from "@/components/app-header";
 import { ButtonLink, Card, Chip, Eyebrow, Heading, Page } from "@/components/ui";
+import { Verse, VERSES } from "@/components/verse";
 import { getDb } from "@/db";
 import { formatSermonDate, plural } from "@/lib/format";
 import { listSeries, listSermons } from "@/sermons/service";
@@ -57,6 +58,7 @@ export default async function AppHome() {
               Add this Sunday&apos;s sermon and the one thing you want people to leave with.
               You&apos;ll get a QR code for the screen.
             </p>
+            <Verse className="mt-6" {...VERSES.notEmpty} />
           </Card>
         )}
 

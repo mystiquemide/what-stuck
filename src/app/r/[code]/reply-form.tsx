@@ -2,6 +2,8 @@
 
 import { useId, useRef, useState, type FormEvent } from "react";
 import { Button, ErrorText, Eyebrow, Heading, Page, Quote } from "@/components/ui";
+import { OliveBranch } from "@/components/landing/ornaments";
+import { Verse, VERSES } from "@/components/verse";
 import { api, fieldError } from "@/lib/client-api";
 
 type Props = {
@@ -82,6 +84,7 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
             Your pastor reads every reply this week.
             {sent.noteScheduled && " We'll send your words back to you Wednesday morning."}
           </p>
+          <Verse className="mt-10" {...VERSES.lamp} />
         </div>
         <Button
           variant="secondary"
@@ -135,7 +138,8 @@ export function ReplyForm({ code, churchName, sermonTitle, open, careContact }: 
 
   return (
     <Page>
-      <form onSubmit={submit} noValidate className="flex flex-1 flex-col">
+      <OliveBranch className="text-gold/50 pointer-events-none absolute top-2 right-2 w-14" />
+      <form onSubmit={submit} noValidate className="relative flex flex-1 flex-col">
         {header}
         <Heading className="mt-5">
           <label htmlFor={ids.takeaway}>What will stick with you?</label>

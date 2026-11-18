@@ -5,6 +5,7 @@ import { getChurchName } from "@/churches/queries";
 import { AppHeader } from "@/components/app-header";
 import { BackLink } from "@/components/back-link";
 import { Card, Chip, Eyebrow, Heading, Page, Quote } from "@/components/ui";
+import { Verse, VERSES } from "@/components/verse";
 import { getDb } from "@/db";
 import { formatSermonDate, plural } from "@/lib/format";
 import { HttpError } from "@/lib/http";
@@ -264,6 +265,8 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
             canWrite={viewer.canWrite}
           />
         </section>
+
+        <Verse className="no-print mt-12" {...VERSES.notEmpty} />
 
         {body && report && (
           <footer className="border-line text-ink-subtle mt-10 border-t pt-4 text-sm">

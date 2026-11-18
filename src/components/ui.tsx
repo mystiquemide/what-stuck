@@ -133,7 +133,7 @@ export function Page({
   return (
     <main
       className={cx(
-        "mx-auto flex w-full flex-1 flex-col px-6 pt-10 pb-8",
+        "relative mx-auto flex w-full flex-1 flex-col px-6 pt-10 pb-8",
         wide ? "max-w-2xl" : "max-w-md",
         className,
       )}
