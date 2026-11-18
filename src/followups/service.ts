@@ -4,6 +4,7 @@ import { churches, followups, responses, sermons } from "@/db/schema";
 import { wednesdayNote } from "@/emails/wednesday-note";
 import { hashToken, randomToken } from "@/lib/crypto";
 import type { Mailer } from "@/lib/email";
+import type { Locale } from "@/lib/locale";
 import { NOTE_WINDOW_DAYS, noteSendTime } from "@/lib/time";
 import type { Passage } from "@/scripture/passage";
 
@@ -14,7 +15,13 @@ const DAY_MS = 86_400_000;
 /** Schedule a member's Wednesday note. Returns false if the week has already passed. */
 export async function scheduleNote(
   db: Database,
-  input: { responseId: string; email: string; preachedOn: string; timeZone: string },
+  input: {
+    responseId: string;
+    email: string;
+    locale?: Locale;
+    preachedOn: string;
+    timeZone: string;
+  },
   now = new Date(),
 ): Promise<boolean> {
   const sendAfter = noteSendTime(input.preachedOn, input.timeZone, now);
@@ -22,6 +29,7 @@ export async function scheduleNote(
   await db.insert(followups).values({
     responseId: input.responseId,
     email: input.email,
+    locale: input.locale ?? "en",
     sendAfter,
     // Placeholder: the real unsubscribe token is minted when the note is sent.
     unsubTokenHash: hashToken(randomToken()),
@@ -41,7 +49,7 @@ export async function sendDueNotes(
   deps: {
     mailer: Mailer;
     appUrl: string;
-    passage: (ref: string | null) => Promise<Passage | null>;
+    passage: (ref: string | null, locale: Locale) => Promise<Passage | null>;
   },
   now = new Date(),
 ): Promise<SendResult> {
@@ -49,6 +57,7 @@ export async function sendDueNotes(
     .select({
       id: followups.id,
       email: followups.email,
+      locale: followups.locale,
       takeaway: responses.takeaway,
       sermonTitle: sermons.title,
       scriptureRef: sermons.scriptureRef,
@@ -67,6 +76,7 @@ export async function sendDueNotes(
 
   const result: SendResult = { sent: 0, failed: 0, waitingForApproval: 0 };
   for (const note of due) {
+    const locale: Locale = note.locale === "es" ? "es" : "en";
     if (!note.approvedAt || !note.reflectionQuestion) {
       result.waitingForApproval++;
       continue;
@@ -86,7 +96,8 @@ export async function sendDueNotes(
           sermonTitle: note.sermonTitle,
           takeaway: note.takeaway,
           reflectionQuestion: note.reflectionQuestion,
-          passage: await deps.passage(note.scriptureRef),
+          passage: await deps.passage(note.scriptureRef, locale),
+          locale,
           unsubscribeUrl: `${deps.appUrl}/api/unsubscribe/${token}`,
         }),
       );

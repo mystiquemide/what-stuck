@@ -7,10 +7,12 @@ import { OliveBranch } from "./landing/ornaments";
 export function Verse({
   text,
   reference,
+  translation = "Berean Standard Bible (BSB)",
   className = "",
 }: {
   text: string;
   reference: string;
+  translation?: string;
   className?: string;
 }) {
   return (
@@ -21,7 +23,7 @@ export function Verse({
           &ldquo;{text}&rdquo;
         </blockquote>
         <figcaption className="text-ink-subtle mt-1 text-sm">
-          {reference}, Berean Standard Bible (BSB)
+          {reference}, {translation}
         </figcaption>
       </div>
     </figure>

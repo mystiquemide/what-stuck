@@ -1,5 +1,6 @@
 import { createScriptureClient } from "@faith-tools/bible-sdk/data";
 import { tryParsePassage } from "grab-bcv";
+import type { Locale } from "@/lib/locale";
 
 /**
  * Scripture for the Wednesday note, from the faith.tools Bible SDK (Berean
@@ -16,7 +17,13 @@ export type Passage = {
   readUrl: string;
 };
 
-export type PassageFetcher = (passageId: string) => Promise<{
+/** Public-domain translations: the Berean Standard Bible, and the Reina-Valera 1909 for Spanish. */
+export const SCRIPTURE_VERSION: Record<Locale, string> = { en: "BSB", es: "spa_r09" };
+
+export type PassageFetcher = (
+  passageId: string,
+  versionId: string,
+) => Promise<{
   reference: string;
   text: string;
   attribution: { text: string; urls: readonly string[] };
@@ -27,9 +34,9 @@ const TIMEOUT_MS = 8_000;
 const CACHE_MS = 24 * 60 * 60_000;
 
 let client: ReturnType<typeof createScriptureClient> | undefined;
-const defaultFetcher: PassageFetcher = (passageId) => {
+const defaultFetcher: PassageFetcher = (passageId, versionId) => {
   client ??= createScriptureClient();
-  return client.getPassage({ versionId: "BSB", passageId });
+  return client.getPassage({ versionId, passageId });
 };
 
 const cache = new Map<string, { value: Passage | null; expires: number }>();
@@ -37,19 +44,22 @@ const cache = new Map<string, { value: Passage | null; expires: number }>();
 export async function getPassage(
   scriptureRef: string | null,
   fetcher: PassageFetcher = defaultFetcher,
+  locale: Locale = "en",
 ): Promise<Passage | null> {
   if (!scriptureRef) return null;
   const parsed = tryParsePassage(scriptureRef);
   if (!parsed.ok) return null;
   const passageId = parsed.value.canonical;
+  const versionId = SCRIPTURE_VERSION[locale];
+  const cacheKey = `${versionId}:${passageId}`;
 
-  const hit = cache.get(passageId);
+  const hit = cache.get(cacheKey);
   if (hit && hit.expires > Date.now()) return hit.value;
 
   let value: Passage | null;
   try {
     const passage = await Promise.race([
-      fetcher(passageId),
+      fetcher(passageId, versionId),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error("Scripture lookup timed out")), TIMEOUT_MS),
       ),
@@ -71,6 +81,6 @@ export async function getPassage(
     return null;
   }
 
-  cache.set(passageId, { value, expires: Date.now() + CACHE_MS });
+  cache.set(cacheKey, { value, expires: Date.now() + CACHE_MS });
   return value;
 }

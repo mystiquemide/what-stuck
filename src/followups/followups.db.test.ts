@@ -134,6 +134,38 @@ describe.skipIf(!hasTestDb)("Wednesday notes", () => {
     expect(again.sent.filter((m) => m.to === "m@example.com")).toHaveLength(0);
   });
 
+  it("sends the note in Spanish, with the Spanish passage, to a member who replied in Spanish", async () => {
+    const { viewer, sermon, member } = await setup();
+    await submitReply(
+      db,
+      member,
+      replySchema.parse({
+        takeaway: "Dios no ha terminado conmigo.",
+        email: "es@example.com",
+        locale: "es",
+      }),
+      afterService,
+    );
+    await approveReflection(db, viewer, sermon.id, "What will you carry this week?");
+    const asked: string[] = [];
+    const mailer = new InboxMailer();
+    await sendDueNotes(
+      db,
+      {
+        ...deps(mailer),
+        passage: async (_ref: string | null, locale: string) => {
+          asked.push(locale);
+          return passage;
+        },
+      },
+      wednesdayMorning,
+    );
+    const note = mailer.sent.find((m) => m.to === "es@example.com")!;
+    expect(asked).toContain("es");
+    expect(note.text).toContain("El domingo dijiste:");
+    expect(note.text).toContain('"Dios no ha terminado conmigo."');
+  });
+
   it("doesn't send before the scheduled time", async () => {
     const { viewer, sermon, member } = await setup();
     await approveReflection(db, viewer, sermon.id, "What will you carry this week?");

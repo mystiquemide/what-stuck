@@ -13,7 +13,7 @@ export const POST = route(async (request: Request) => {
   const result = await sendDueNotes(getDb(), {
     mailer: getMailer(),
     appUrl: env.APP_URL,
-    passage: getPassage,
+    passage: (ref, locale) => getPassage(ref, undefined, locale),
   });
   return Response.json(result);
 });

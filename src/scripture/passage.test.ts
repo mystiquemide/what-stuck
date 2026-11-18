@@ -15,7 +15,7 @@ describe("getPassage", () => {
   it("turns a human reference into a passage with attribution and a read link", async () => {
     const fetcher = fake("I thank my God every time I remember you.");
     const passage = await getPassage("Philippians 1:3", fetcher);
-    expect(fetcher).toHaveBeenCalledWith("PHP.1.3");
+    expect(fetcher).toHaveBeenCalledWith("PHP.1.3", "BSB");
     expect(passage).toEqual({
       reference: "ref:PHP.1.3",
       text: "I thank my God every time I remember you.",
@@ -52,5 +52,11 @@ describe("getPassage", () => {
     await getPassage("Romans 8:28-29", fetcher);
     await getPassage("Romans 8:28-29", fetcher);
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the Reina-Valera 1909 for Spanish", async () => {
+    const fetcher = fake("Lámpara es á mis pies tu palabra");
+    await getPassage("Psalm 119:105", fetcher, "es");
+    expect(fetcher).toHaveBeenCalledWith("PSA.119.105", "spa_r09");
   });
 });

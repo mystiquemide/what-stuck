@@ -72,3 +72,48 @@ test("the pastor sees a new reply arrive without reloading", async ({ page, brow
 
   await expect(count).toHaveText(`${before + 1} replies`, { timeout: 20_000 });
 });
+
+test.describe("Spanish", () => {
+  test.use({ locale: "es-MX" });
+
+  test("a phone set to Spanish gets the reply page in Spanish", async ({ page, browser }) => {
+    const demo = await browser.newPage({ locale: "en-US" });
+    const replyPath = await openDemo(demo);
+    await demo.close();
+
+    await page.goto(replyPath);
+    await expect(page.getByRole("heading", { name: "¿Qué te vas a llevar de hoy?" })).toBeVisible();
+    await expect(page.locator("main")).toHaveAttribute("lang", "es");
+    await expectAccessible(page);
+
+    await page.getByLabel("¿Qué te vas a llevar de hoy?").fill("Dios no ha terminado conmigo.");
+    await page.getByRole("button", { name: "Enviar" }).click();
+    await expect(page.getByRole("heading", { name: "Gracias." })).toBeVisible();
+    await expect(page.getByText(/Reina-Valera 1909/)).toBeVisible();
+    await expectAccessible(page);
+  });
+
+  test("shows Spanish crisis help, with 988 and AYUDA by text", async ({ page, browser }) => {
+    const demo = await browser.newPage({ locale: "en-US" });
+    const replyPath = await openDemo(demo);
+    await demo.close();
+
+    await page.goto(replyPath);
+    await page.getByLabel("¿Qué te vas a llevar de hoy?").fill("No quiero vivir así.");
+    await page.getByRole("button", { name: "Enviar" }).click();
+    await expect(page.getByRole("heading", { name: "Gracias por contárnoslo." })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Llamar al 988" })).toHaveAttribute("href", "tel:988");
+    await expect(page.getByRole("link", { name: /AYUDA/ })).toHaveAttribute("href", "sms:988?&body=AYUDA");
+    await expectAccessible(page);
+  });
+
+  test("can switch back to English", async ({ page, browser }) => {
+    const demo = await browser.newPage({ locale: "en-US" });
+    const replyPath = await openDemo(demo);
+    await demo.close();
+
+    await page.goto(replyPath);
+    await page.getByRole("button", { name: "English" }).click();
+    await expect(page.getByRole("heading", { name: "What will stick with you?" })).toBeVisible();
+  });
+});

@@ -5,6 +5,7 @@ import { emailSchema } from "@/auth/magic-link";
 import type { Database } from "@/db";
 import { LIMITS, responses, sermons } from "@/db/schema";
 import { HttpError, notFound } from "@/lib/http";
+import { LOCALES } from "@/lib/locale";
 import { scheduleNote } from "@/followups/service";
 import { getSermonForViewer } from "@/sermons/service";
 import { needsCare } from "./care";
@@ -40,6 +41,8 @@ export const replySchema = z.object({
     .optional()
     .transform((v) => v?.trim() || undefined)
     .pipe(emailSchema.optional()),
+  /** The language the member replied in, so a Wednesday note comes back in it. */
+  locale: z.enum(LOCALES).optional().default("en"),
   /** Honeypot. Hidden from people; bots fill it in. */
   website: z.string().optional(),
 });
@@ -88,6 +91,7 @@ export async function submitReply(
         {
           responseId,
           email: input.email,
+          locale: input.locale,
           preachedOn: sermon.preachedOn,
           timeZone: sermon.churchTimezone ?? "UTC",
         },

@@ -184,6 +184,8 @@ export const followups = pgTable(
       .unique()
       .references(() => responses.id, { onDelete: "cascade" }),
     email: text("email").notNull(),
+    /** The language the member replied in, so the note comes back in it. */
+    locale: text("locale").notNull().default("en"),
     sendAfter: timestamp("send_after", { withTimezone: true }).notNull(),
     sentAt: timestamp("sent_at", { withTimezone: true }),
     unsubTokenHash: text("unsub_token_hash").notNull().unique(),

@@ -3,8 +3,10 @@
 import { useId, useRef, useState, type FormEvent } from "react";
 import { Button, ErrorText, Eyebrow, Heading, Page, Quote } from "@/components/ui";
 import { OliveBranch } from "@/components/landing/ornaments";
-import { Verse, VERSES } from "@/components/verse";
+import { Verse } from "@/components/verse";
 import { api, fieldError } from "@/lib/client-api";
+import type { Locale } from "@/lib/locale";
+import { REPLY_COPY, translateServerMessage, type ReplyCopy } from "./copy";
 
 type Props = {
   code: string;
@@ -14,6 +16,8 @@ type Props = {
   careContact: string | null;
   careFormUrl: string | null;
   connectFormUrl: string | null;
+  /** From the phone's language settings. The member can switch. */
+  initialLocale: Locale;
 };
 
 type Sent = { takeaway: string; care: boolean; noteScheduled: boolean };
@@ -28,7 +32,9 @@ export function ReplyForm({
   careContact,
   careFormUrl,
   connectFormUrl,
+  initialLocale,
 }: Props) {
+  const [locale, setLocale] = useState<Locale>(initialLocale);
   const [takeaway, setTakeaway] = useState("");
   const [question, setQuestion] = useState("");
   const [wantsNote, setWantsNote] = useState(false);
@@ -43,21 +49,36 @@ export function ReplyForm({
   const [sent, setSent] = useState<Sent | null>(null);
   const honeypot = useRef<HTMLInputElement>(null);
   const ids = { takeaway: useId(), question: useId(), email: useId(), err: useId() };
+  const t = REPLY_COPY[locale];
 
   const header = (
-    <Eyebrow>
-      {churchName} <span aria-hidden>·</span> {sermonTitle}
-    </Eyebrow>
+    <div className="flex items-start justify-between gap-3">
+      <Eyebrow>
+        {churchName} <span aria-hidden>·</span> {sermonTitle}
+      </Eyebrow>
+      <div className="flex shrink-0 items-start">
+        <OliveBranch className="text-gold/50 pointer-events-none -mt-2 w-9" />
+        <button
+          type="button"
+          onClick={() => {
+            setLocale(locale === "en" ? "es" : "en");
+            setErrors({});
+          }}
+          lang={locale === "en" ? "es" : "en"}
+          className="text-ink-muted hover:text-ink relative -mt-3 -mr-3 min-h-11 shrink-0 rounded-lg px-3 text-sm font-medium underline underline-offset-4"
+        >
+          {t.switchTo}
+        </button>
+      </div>
+    </div>
   );
 
   if (!open) {
     return (
-      <Page>
+      <Page lang={locale}>
         {header}
-        <Heading className="mt-6">Replies for this sermon are closed.</Heading>
-        <p className="text-ink-muted mt-4 text-lg">
-          Thanks for scanning. Look for the code again next Sunday.
-        </p>
+        <Heading className="mt-6">{t.closedHeading}</Heading>
+        <p className="text-ink-muted mt-4 text-lg">{t.closedBody}</p>
       </Page>
     );
   }
@@ -65,6 +86,8 @@ export function ReplyForm({
   if (sent?.care)
     return (
       <CareScreen
+        t={t}
+        locale={locale}
         header={header}
         churchName={churchName}
         careContact={careContact}
@@ -74,7 +97,7 @@ export function ReplyForm({
 
   if (sent) {
     return (
-      <Page>
+      <Page lang={locale}>
         {header}
         <div className="flex flex-1 flex-col justify-center py-10">
           <div
@@ -94,12 +117,12 @@ export function ReplyForm({
               <path d="M20 6 9 17l-5-5" />
             </svg>
           </div>
-          <Heading className="mt-6">Thank you.</Heading>
-          <Eyebrow className="mt-6">You said</Eyebrow>
+          <Heading className="mt-6">{t.thanks}</Heading>
+          <Eyebrow className="mt-6">{t.youSaid}</Eyebrow>
           <Quote className="mt-2">{sent.takeaway}</Quote>
           <p className="text-ink-muted mt-6 text-lg">
-            Your pastor reads every reply this week.
-            {sent.noteScheduled && " We'll send your words back to you Wednesday morning."}
+            {t.pastorReads}
+            {sent.noteScheduled && t.noteScheduled}
           </p>
           {connectFormUrl && (
             <a
@@ -108,16 +131,14 @@ export function ReplyForm({
               rel="noopener noreferrer"
               className="rounded-card border-line bg-surface hover:border-ink-subtle mt-8 block border p-5"
             >
-              <span className="block text-lg font-semibold">Take a next step at {churchName}</span>
-              <span className="text-ink-muted mt-1 block text-base">
-                New here, or want to get connected? Fill in the church&apos;s connect card.
-              </span>
+              <span className="block text-lg font-semibold">{t.nextStepTitle(churchName)}</span>
+              <span className="text-ink-muted mt-1 block text-base">{t.nextStepBody}</span>
               <span className="text-clay mt-2 block text-base font-semibold">
-                Open the connect card <span aria-hidden>→</span>
+                {t.nextStepLink} <span aria-hidden>→</span>
               </span>
             </a>
           )}
-          <Verse className="mt-10" {...VERSES.lamp} />
+          <Verse className="mt-10" {...t.verse} />
         </div>
         <Button
           variant="secondary"
@@ -128,7 +149,7 @@ export function ReplyForm({
             setQuestion("");
           }}
         >
-          Add another thought
+          {t.another}
         </Button>
       </Page>
     );
@@ -137,11 +158,11 @@ export function ReplyForm({
   async function submit(event: FormEvent) {
     event.preventDefault();
     if (!takeaway.trim()) {
-      setErrors({ takeaway: "Tell us what will stick with you." });
+      setErrors({ takeaway: t.emptyTakeaway });
       return;
     }
     if (wantsNote && !email.trim()) {
-      setErrors({ email: "Add your email, or untick the Wednesday note." });
+      setErrors({ email: t.emptyEmail });
       return;
     }
     setSending(true);
@@ -151,6 +172,7 @@ export function ReplyForm({
         takeaway,
         question: question || undefined,
         email: wantsNote ? email : undefined,
+        locale,
         website: honeypot.current?.value || undefined,
       },
     });
@@ -159,27 +181,25 @@ export function ReplyForm({
       setSent({ takeaway: takeaway.trim(), ...result.data });
       return;
     }
+    const say = (message: string | undefined) => translateServerMessage(message, locale);
     setErrors({
-      takeaway: fieldError(result, "takeaway"),
-      question: fieldError(result, "question"),
-      email: fieldError(result, "email"),
-      form: result.fields ? undefined : result.error,
+      takeaway: say(fieldError(result, "takeaway")),
+      question: say(fieldError(result, "question")),
+      email: say(fieldError(result, "email")),
+      form: result.fields ? undefined : say(result.error),
     });
   }
 
   const remaining = MAX - takeaway.length;
 
   return (
-    <Page>
-      <OliveBranch className="text-gold/50 pointer-events-none absolute top-2 right-2 w-14" />
+    <Page lang={locale}>
       <form onSubmit={submit} noValidate className="relative flex flex-1 flex-col">
         {header}
         <Heading className="mt-5">
-          <label htmlFor={ids.takeaway}>What will stick with you?</label>
+          <label htmlFor={ids.takeaway}>{t.heading}</label>
         </Heading>
-        <p className="text-ink-muted mt-3 text-lg">
-          A word, a line, a verse. However you&apos;d say it.
-        </p>
+        <p className="text-ink-muted mt-3 text-lg">{t.sub}</p>
 
         <textarea
           id={ids.takeaway}
@@ -190,18 +210,18 @@ export function ReplyForm({
           required
           aria-invalid={Boolean(errors.takeaway)}
           aria-describedby={errors.takeaway ? `${ids.takeaway}-err` : undefined}
-          placeholder="Type what stuck with you"
+          placeholder={t.takeawayPlaceholder}
           className="rounded-field border-line bg-surface text-ink placeholder:text-ink-subtle focus:border-ink mt-6 w-full resize-none border-[1.5px] px-4 py-4 font-serif text-[1.3125rem] leading-snug focus:outline-none"
         />
         {remaining < 80 && (
           <p className="text-ink-subtle mt-1 text-right text-sm" aria-live="polite">
-            {remaining} characters left
+            {t.charsLeft(remaining)}
           </p>
         )}
         {errors.takeaway && <ErrorText id={`${ids.takeaway}-err`}>{errors.takeaway}</ErrorText>}
 
         <label htmlFor={ids.question} className="text-ink-muted mt-5 text-base font-medium">
-          Any question it raised? <span className="text-ink-subtle font-normal">(optional)</span>
+          {t.questionLabel} <span className="text-ink-subtle font-normal">{t.optional}</span>
         </label>
         <textarea
           id={ids.question}
@@ -209,7 +229,7 @@ export function ReplyForm({
           onChange={(e) => setQuestion(e.target.value)}
           maxLength={MAX}
           rows={2}
-          placeholder="Something you're still wondering about"
+          placeholder={t.questionPlaceholder}
           className="rounded-field border-line bg-surface text-ink placeholder:text-ink-subtle focus:border-ink mt-2 w-full resize-none border-[1.5px] px-4 py-3 font-serif text-lg leading-snug focus:outline-none"
         />
         {errors.question && <ErrorText>{errors.question}</ErrorText>}
@@ -222,18 +242,14 @@ export function ReplyForm({
             className="accent-ink mt-0.5 size-6 shrink-0"
           />
           <span>
-            <span className="block text-base font-medium">
-              Send my words back to me on Wednesday
-            </span>
-            <span className="text-ink-subtle block text-sm">
-              One email with the verse. We delete your address after 14 days.
-            </span>
+            <span className="block text-base font-medium">{t.noteLabel}</span>
+            <span className="text-ink-subtle block text-sm">{t.noteHint}</span>
           </span>
         </label>
         {wantsNote && (
           <div className="mt-3">
             <label htmlFor={ids.email} className="sr-only">
-              Your email
+              {t.emailLabel}
             </label>
             <input
               id={ids.email}
@@ -242,7 +258,7 @@ export function ReplyForm({
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder={t.emailPlaceholder}
               aria-invalid={Boolean(errors.email)}
               className="rounded-field border-line bg-surface focus:border-ink h-14 w-full border-[1.5px] px-4 text-lg focus:outline-none"
             />
@@ -261,78 +277,77 @@ export function ReplyForm({
         <div className="flex-1" />
         {errors.form && <ErrorText id={ids.err}>{errors.form}</ErrorText>}
         <Button type="submit" full className="mt-8" disabled={sending}>
-          {sending ? "Sending" : "Send"}
+          {sending ? t.sending : t.send}
         </Button>
-        <p className="text-ink-subtle mt-3 text-center text-sm">
-          Anonymous. Your pastor reads every reply. AI helps sort them.
-        </p>
+        <p className="text-ink-subtle mt-3 text-center text-sm">{t.footer}</p>
       </form>
     </Page>
   );
 }
 
 function CareScreen({
+  t,
+  locale,
   header,
   churchName,
   careContact,
   careFormUrl,
 }: {
+  t: ReplyCopy;
+  locale: Locale;
   header: React.ReactNode;
   churchName: string;
   careContact: string | null;
   careFormUrl: string | null;
 }) {
   return (
-    <Page>
+    <Page lang={locale}>
       {header}
-      <Heading className="mt-8">Thank you for telling us.</Heading>
-      <p className="text-ink-muted mt-4 text-lg">
-        It sounds like you may be carrying something heavy. You don&apos;t have to carry it alone.
-      </p>
+      <Heading className="mt-8">{t.careHeading}</Heading>
+      <p className="text-ink-muted mt-4 text-lg">{t.careBody}</p>
       <section className="rounded-card bg-care-soft mt-7 p-5" aria-labelledby="crisis-heading">
         <p id="crisis-heading" className="text-care text-base font-semibold">
-          If you&apos;re in danger or thinking about ending your life
+          {t.crisisTitle}
         </p>
-        <p className="mt-2 font-serif text-[1.375rem] leading-snug">
-          Call or text 988, any time, day or night.
-        </p>
+        <p className="mt-2 font-serif text-[1.375rem] leading-snug">{t.crisisLine}</p>
         <a
           href="tel:988"
           className="rounded-button bg-care mt-4 inline-flex min-h-14 w-full items-center justify-center px-6 text-lg font-semibold text-white"
         >
-          Call or text 988
+          {t.crisisCall}
         </a>
-        <p className="text-ink-muted mt-3 text-sm">
-          Outside the US, call your local emergency number.
-        </p>
+        {t.crisisText && (
+          <a
+            href="sms:988?&body=AYUDA"
+            className="text-care mt-3 block text-center text-base font-semibold underline underline-offset-4"
+          >
+            {t.crisisText}
+          </a>
+        )}
+        <p className="text-ink-muted mt-3 text-sm">{t.crisisOutside}</p>
       </section>
       {careContact && (
         <section className="rounded-card border-line bg-surface mt-4 border p-5">
-          <p className="text-lg font-semibold">Talk to someone at {churchName}</p>
+          <p className="text-lg font-semibold">{t.talkTo(churchName)}</p>
           <p className="text-ink-muted mt-1 text-base">{careContact}</p>
         </section>
       )}
       {careFormUrl && (
         <section className="rounded-card border-line bg-surface mt-4 border p-5">
-          <p className="text-lg font-semibold">Want someone to reach out?</p>
-          <p className="text-ink-muted mt-1 text-base">
-            Your reply here stays anonymous. On the church&apos;s own form you choose what to share
-            and how they can reach you.
-          </p>
+          <p className="text-lg font-semibold">{t.reachOutTitle}</p>
+          <p className="text-ink-muted mt-1 text-base">{t.reachOutBody}</p>
           <a
             href={careFormUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-button border-line bg-surface text-ink hover:border-ink-subtle mt-4 inline-flex min-h-14 w-full items-center justify-center border-[1.5px] px-6 text-lg font-semibold"
           >
-            Ask someone to reach out
+            {t.reachOutButton}
           </a>
         </section>
       )}
       <div className="flex-1" />
-      <p className="text-ink-subtle mt-8 text-center text-sm">
-        Your reply is still anonymous. Your pastor will see it first in this week&apos;s replies.
-      </p>
+      <p className="text-ink-subtle mt-8 text-center text-sm">{t.careFooter}</p>
     </Page>
   );
 }

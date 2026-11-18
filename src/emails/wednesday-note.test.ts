@@ -44,4 +44,15 @@ describe("wednesdayNote", () => {
     expect(note.headers?.["List-Unsubscribe"]).toBe(`<${base.unsubscribeUrl}>`);
     expect(note.html).toContain("Delete my email now");
   });
+
+  it("speaks Spanish to a member who replied in Spanish", () => {
+    const note = wednesdayNote({ ...base, passage, locale: "es" });
+    expect(note.subject).toBe("Lo que te quedó en Hope Street Church");
+    expect(note.text).toContain("El domingo dijiste:");
+    expect(note.text).toContain("Reina-Valera 1909");
+    expect(note.text).not.toContain(BSB_NOTICE);
+    expect(note.html).toContain('lang="es"');
+    // The pastor's question is never machine-translated.
+    expect(note.text).toContain(base.reflectionQuestion);
+  });
 });

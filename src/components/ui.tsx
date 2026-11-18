@@ -125,13 +125,16 @@ export function Page({
   children,
   className,
   wide,
+  lang,
 }: {
   children: ReactNode;
   className?: string;
   wide?: boolean;
+  lang?: string;
 }) {
   return (
     <main
+      lang={lang}
       className={cx(
         "relative mx-auto flex w-full flex-1 flex-col px-6 pt-10 pb-8",
         wide ? "max-w-2xl" : "max-w-md",
