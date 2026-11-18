@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_rethrow } from "next/navigation";
 import { z } from "zod";
 
 /** An error that is safe to show to the caller. */
@@ -28,6 +29,8 @@ export function route<Args extends unknown[]>(
     try {
       return await handler(...args);
     } catch (error) {
+      // Let Next.js handle its own control-flow signals (redirects, dynamic bailouts).
+      unstable_rethrow(error);
       if (error instanceof HttpError) {
         return Response.json({ error: error.message, ...error.extra }, { status: error.status });
       }
