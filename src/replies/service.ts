@@ -1,9 +1,11 @@
 import { asc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { assertCanWrite, requireViewer, type Viewer } from "@/auth/access";
+import { emailSchema } from "@/auth/magic-link";
 import type { Database } from "@/db";
 import { LIMITS, responses, sermons } from "@/db/schema";
 import { HttpError, notFound } from "@/lib/http";
+import { scheduleNote } from "@/followups/service";
 import { getSermonForViewer } from "@/sermons/service";
 import { needsCare } from "./care";
 
@@ -32,21 +34,40 @@ export const replySchema = z.object({
     .transform((v) => (v ? cleanText(v) : ""))
     .pipe(z.string().max(LIMITS.question, `Keep it under ${LIMITS.question} characters.`))
     .transform((v) => v || null),
+  /** Optional: the member asked for their words back on Wednesday. */
+  email: z
+    .string()
+    .optional()
+    .transform((v) => v?.trim() || undefined)
+    .pipe(emailSchema.optional()),
   /** Honeypot. Hidden from people; bots fill it in. */
   website: z.string().optional(),
 });
 
 export type ReplyInput = z.infer<typeof replySchema>;
 
-export type SubmitResult = { saved: boolean; care: boolean; responseId: string | null };
+export type SubmitResult = {
+  saved: boolean;
+  care: boolean;
+  responseId: string | null;
+  noteScheduled: boolean;
+};
+
+type ReplySermon = {
+  id: string;
+  status: "open" | "closed";
+  preachedOn: string;
+  churchTimezone?: string;
+};
 
 export async function submitReply(
   db: Database,
-  sermon: { id: string; status: "open" | "closed" },
+  sermon: ReplySermon,
   input: ReplyInput,
+  now = new Date(),
 ): Promise<SubmitResult> {
   // A filled honeypot gets a normal-looking success so bots learn nothing.
-  if (input.website) return { saved: false, care: false, responseId: null };
+  if (input.website) return { saved: false, care: false, responseId: null, noteScheduled: false };
   if (sermon.status !== "open") throw new HttpError(409, "Replies for this sermon are closed.");
 
   const care = needsCare(input.takeaway, input.question);
@@ -59,7 +80,22 @@ export async function submitReply(
       careFlag: care,
     })
     .returning({ id: responses.id });
-  return { saved: true, care, responseId: row!.id };
+  const responseId = row!.id;
+
+  const noteScheduled = input.email
+    ? await scheduleNote(
+        db,
+        {
+          responseId,
+          email: input.email,
+          preachedOn: sermon.preachedOn,
+          timeZone: sermon.churchTimezone ?? "UTC",
+        },
+        now,
+      )
+    : false;
+
+  return { saved: true, care, responseId, noteScheduled };
 }
 
 export async function listReplies(db: Database, viewer: Viewer | null, sermonId: string) {

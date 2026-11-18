@@ -22,7 +22,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.10.0",
+    "@faith-tools/bible-sdk": "^0.12.0",
     "drizzle-orm": "^0.45.4",
+    "grab-bcv": "^0.1.8",
     "next": "16.4.6",
     "postgres": "^4.1.1",
     "qrcode": "^1.5.4",

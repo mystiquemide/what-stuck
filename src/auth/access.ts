@@ -69,3 +69,17 @@ export function requireViewer(viewer: Viewer | null): Viewer {
   if (!viewer) throw unauthorized();
   return viewer;
 }
+
+/**
+ * Write access to one church for scheduled jobs and scripts, never for requests.
+ * Every service still checks that records belong to this church.
+ */
+export function systemViewer(churchId: string): Viewer {
+  return {
+    kind: "staff",
+    user: { id: "system", email: "system@localhost" },
+    churchId,
+    role: "owner",
+    canWrite: true,
+  };
+}

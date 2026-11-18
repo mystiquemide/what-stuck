@@ -51,5 +51,8 @@ export const POST = route(async (request: Request, ctx: Ctx) => {
 
   const input = await readJson(request, replySchema);
   const result = await submitReply(db, sermon, input);
-  return Response.json({ ok: true, care: result.care }, { status: 201 });
+  return Response.json(
+    { ok: true, care: result.care, noteScheduled: result.noteScheduled },
+    { status: 201 },
+  );
 });

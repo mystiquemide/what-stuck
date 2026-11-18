@@ -1,7 +1,13 @@
 import "server-only";
 import { features, getEnv } from "./env";
 
-export type EmailMessage = { to: string; subject: string; text: string; html?: string };
+export type EmailMessage = {
+  to: string;
+  subject: string;
+  text: string;
+  html?: string;
+  headers?: Record<string, string>;
+};
 
 export interface Mailer {
   send(message: EmailMessage): Promise<void>;
