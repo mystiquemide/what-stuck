@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { displayReference } from "@/scripture/reference";
 import { notFound } from "next/navigation";
 import { requirePastorPage } from "@/auth/page";
 import { getChurchName } from "@/churches/queries";
 import { AppHeader } from "@/components/app-header";
 import { BackLink } from "@/components/back-link";
+import { LiveRefresh } from "@/components/live-refresh";
 import { ButtonLink, Card, Chip, Eyebrow, Heading, Page } from "@/components/ui";
 import { getDb } from "@/db";
 import { getEnv } from "@/lib/env";
@@ -30,10 +32,11 @@ export default async function SermonPage({ params }: PageProps<"/app/sermons/[id
     <>
       <AppHeader viewer={viewer} churchName={churchName} />
       <Page wide className="pt-6">
+        {sermon.status === "open" && <LiveRefresh />}
         <BackLink href="/app">Your sermons</BackLink>
         <p className="text-ink-subtle mt-4 text-sm">
           {formatSermonDate(sermon.preachedOn, true)}
-          {sermon.scriptureRef && ` · ${sermon.scriptureRef}`}
+          {sermon.scriptureRef && ` · ${displayReference(sermon.scriptureRef)}`}
         </p>
         <Heading className="mt-1">{sermon.title}</Heading>
         <Card className="mt-6">
@@ -56,7 +59,9 @@ export default async function SermonPage({ params }: PageProps<"/app/sermons/[id
             <Eyebrow>Put this on the screen at the end of the sermon</Eyebrow>
             <p className="mt-1 font-medium break-all">{replyUrl.replace(/^https?:\/\//, "")}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Chip tone="neutral">{plural(sermon.replyCount, "reply", "replies")}</Chip>
+              <Chip tone="neutral">
+                <span aria-live="polite">{plural(sermon.replyCount, "reply", "replies")}</span>
+              </Chip>
               {sermon.careCount > 0 && <Chip tone="care">{sermon.careCount} may need care</Chip>}
             </div>
             <ShareActions

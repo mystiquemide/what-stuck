@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { displayReference } from "@/scripture/reference";
 import Link from "next/link";
 import { requirePastorPage } from "@/auth/page";
 import { getChurchName } from "@/churches/queries";
@@ -121,7 +122,7 @@ function SermonCard({ sermon, large }: { sermon: SermonRow; large?: boolean }) {
     >
       <p className="text-ink-subtle text-sm">
         {formatSermonDate(sermon.preachedOn)}
-        {sermon.scriptureRef && ` · ${sermon.scriptureRef}`}
+        {sermon.scriptureRef && ` · ${displayReference(sermon.scriptureRef)}`}
       </p>
       <p
         className={

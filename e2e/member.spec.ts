@@ -46,3 +46,20 @@ test.describe("member reply", () => {
     await expectAccessible(page);
   });
 });
+
+test("the pastor sees a new reply arrive without reloading", async ({ page, browser }) => {
+  const replyPath = await openDemo(page);
+  await page.getByRole("link", { name: /Pressing On/ }).first().click();
+  await expect(page.getByRole("img", { name: /QR code/ })).toBeVisible();
+  const count = page.locator("span[aria-live=polite]", { hasText: /repl(y|ies)/ });
+  const before = Number((await count.textContent())?.match(/\d+/)?.[0]);
+
+  const member = await browser.newPage();
+  await member.goto(replyPath);
+  await member.getByLabel("What will stick with you?").fill("He took hold of me first.");
+  await member.getByRole("button", { name: "Send" }).click();
+  await expect(member.getByRole("heading", { name: "Thank you." })).toBeVisible();
+  await member.close();
+
+  await expect(count).toHaveText(`${before + 1} replies`, { timeout: 20_000 });
+});

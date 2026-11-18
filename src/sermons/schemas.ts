@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LIMITS } from "@/db/schema";
+import { displayReference } from "@/scripture/reference";
 
 const isoDate = z.iso.date("Use a date like 2026-11-22.");
 
@@ -14,7 +15,9 @@ const optionalText = (max: number) =>
 export const createSermonSchema = z.object({
   title: z.string().trim().min(1, "Give the sermon a title.").max(LIMITS.title),
   preachedOn: isoDate,
-  scriptureRef: optionalText(LIMITS.scriptureRef),
+  scriptureRef: optionalText(LIMITS.scriptureRef).transform((v) =>
+    v ? displayReference(v) : null,
+  ),
   intendedTakeaway: z
     .string()
     .trim()

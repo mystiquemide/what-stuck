@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { displayReference } from "@/scripture/reference";
 import { notFound } from "next/navigation";
 import { requirePastorPage } from "@/auth/page";
 import { getChurchName } from "@/churches/queries";
@@ -52,7 +53,7 @@ export default async function ReportPage({ params }: PageProps<"/app/sermons/[id
         <BackLink href={`/app/sermons/${sermon.id}`}>{sermon.title}</BackLink>
         <p className="text-ink-subtle mt-4 text-sm">
           {formatSermonDate(sermon.preachedOn, true)}
-          {sermon.scriptureRef && ` · ${sermon.scriptureRef}`} ·{" "}
+          {sermon.scriptureRef && ` · ${displayReference(sermon.scriptureRef)}`} ·{" "}
           {plural(visible.length, "reply", "replies")}
         </p>
         <Heading className="mt-1">What stuck</Heading>
