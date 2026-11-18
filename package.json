@@ -60,7 +60,8 @@
   "overrides": {
     "@axe-core/playwright": {
       "playwright-core": "1.63.0"
-    }
+    },
+    "zod": "$zod"
   },
   "license": "MIT"
 }
