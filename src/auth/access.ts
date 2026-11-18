@@ -64,3 +64,8 @@ export async function createChurchForUser(
     return church;
   });
 }
+
+export function requireViewer(viewer: Viewer | null): Viewer {
+  if (!viewer) throw unauthorized();
+  return viewer;
+}

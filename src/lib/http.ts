@@ -82,3 +82,10 @@ export function clientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   return forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
 }
+
+/** Route params that should be UUIDs. Anything else is simply "not found". */
+export function uuidParam(value: string): string {
+  const parsed = z.uuid().safeParse(value);
+  if (!parsed.success) throw notFound();
+  return parsed.data;
+}

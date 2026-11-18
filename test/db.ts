@@ -35,3 +35,20 @@ export async function makeChurchWithSermon(db: Db, overrides: { status?: "open" 
 
   return { church, sermon };
 }
+
+/** A signed-in pastor who owns a fresh church. */
+export async function makeStaff(db: Db) {
+  const { createChurchForUser, staffViewer } = await import("@/auth/access");
+  const [user] = await db
+    .insert(schema.users)
+    .values({ email: `pastor-${randomUUID()}@example.com` })
+    .returning();
+  const church = await createChurchForUser(db, user!.id, {
+    name: "Staff Church",
+    slug: `staff-${randomUUID()}`,
+    timezone: "America/Chicago",
+  });
+  const viewer = await staffViewer(db, user!);
+  if (!viewer) throw new Error("no viewer");
+  return { church, viewer, user: user! };
+}
