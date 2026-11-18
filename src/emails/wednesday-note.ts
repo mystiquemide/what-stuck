@@ -42,7 +42,7 @@ ${
     ? `<p style="margin:0;white-space:pre-wrap;">${escapeHtml(passage.text)}</p>`
     : `<p style="margin:0;"><a href="${escapeHtml(passage.readUrl)}" style="color:#9a3412;">Read the passage</a></p>`
 }
-<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#78716c;">${escapeHtml(passage.attribution)}</p>`
+<p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#57534e;">${escapeHtml(passage.attribution)}</p>`
     : "";
 
   const html = emailLayout(
@@ -51,7 +51,7 @@ ${
 ${passageHtml}
 <p style="margin:28px 0 8px;color:#57534e;">One question to sit with this week:</p>
 <p style="margin:0;font-weight:bold;">${escapeHtml(input.reflectionQuestion)}</p>`,
-    `${escapeHtml(footer)}<br><a href="${escapeHtml(input.unsubscribeUrl)}" style="color:#78716c;">Delete my email now</a>`,
+    `${escapeHtml(footer)}<br><a href="${escapeHtml(input.unsubscribeUrl)}" style="color:#57534e;">Delete my email now</a>`,
   );
 
   return {
