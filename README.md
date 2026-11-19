@@ -2,7 +2,7 @@
 
 Pastors preach every week and rarely find out what people took home. What Stuck asks the congregation one question after the sermon, "What will stick with you?", and on Monday shows the pastor how close the room got to the point they meant to make.
 
-**Live:** [whatstuck.midelabs.xyz](https://whatstuck.midelabs.xyz) · **Judge's tour:** [JUDGES.md](JUDGES.md) · **Track:** Discipleship & Spiritual Growth · **License:** MIT
+**Live:** [whatstuck.midelabs.xyz](https://whatstuck.midelabs.xyz) · **Demo video:** [3 minutes on YouTube](https://youtu.be/M1E-VAp0zr0) · **Judge's tour:** [JUDGES.md](JUDGES.md) · **Track:** Discipleship & Spiritual Growth · **License:** MIT
 
 ![What Stuck on the web](docs/screens/landing.webp)
 

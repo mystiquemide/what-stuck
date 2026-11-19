@@ -2,7 +2,7 @@
 
 Five minutes, with a phone and a laptop. Everything here works on the live site with no account.
 
-**Live:** [whatstuck.midelabs.xyz](https://whatstuck.midelabs.xyz)
+**Live:** [whatstuck.midelabs.xyz](https://whatstuck.midelabs.xyz) · **Demo video:** [3 minutes on YouTube](https://youtu.be/M1E-VAp0zr0)
 
 ## 1. Be a church member (phone, 1 minute)
 
