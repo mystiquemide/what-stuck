@@ -22,3 +22,6 @@ export const POST = route(async (request: Request) => {
   });
   return Response.json(result);
 });
+
+/** Vercel Cron calls with GET and the same Bearer secret. */
+export const GET = POST;

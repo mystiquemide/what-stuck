@@ -9,3 +9,6 @@ export const POST = route(async (request: Request) => {
   assertCron(request, getEnv().CRON_SECRET);
   return Response.json(await runCleanup(getDb()));
 });
+
+/** Vercel Cron calls with GET and the same Bearer secret. */
+export const GET = POST;

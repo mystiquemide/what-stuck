@@ -6,7 +6,7 @@ import { getEnv } from "@/lib/env";
 import { route } from "@/lib/route";
 import { getPassage } from "@/scripture/passage";
 
-/** Every 15 minutes: send Wednesday notes that are due. */
+/** Send Wednesday notes that are due. Runs on a schedule (daily on Vercel). */
 export const POST = route(async (request: Request) => {
   const env = getEnv();
   assertCron(request, env.CRON_SECRET);
@@ -17,3 +17,6 @@ export const POST = route(async (request: Request) => {
   });
   return Response.json(result);
 });
+
+/** Vercel Cron calls with GET and the same Bearer secret. */
+export const GET = POST;
