@@ -9,6 +9,7 @@ Pastors preach every week and rarely find out what people took home. What Stuck 
 ## Contents
 
 - [About](#about)
+- [Tried by real churches](#tried-by-real-churches)
 - [A week with What Stuck](#a-week-with-what-stuck)
 - [Features](#features)
 - [How the AI works](#how-the-ai-works)
@@ -40,6 +41,14 @@ It gives everyone in the room ten seconds and one honest question, with no app, 
 - **Members**, who are heard without having to find the pastor after the service.
 
 All a church needs is a screen or a printed QR code, and people with phones.
+
+## Tried by real churches
+
+In the last week of the hackathon we showed What Stuck to pastors in Edo State, Nigeria, at Christ Apostolic Church, Christ the Living Word Bible Church and Eghosa Anglican Church. Some of the small churches used the live site on a Sunday and read real replies from their members on Monday.
+
+The part people reacted to most was the care screen: a member who types something heavy is pointed straight to help and to their church's care team, while their reply stays anonymous. We also showed it to people on the street and at work, and the care screen got the strongest response there too.
+
+There are no photos or quotes from these Sundays. The churches asked for privacy, and since What Stuck is built on anonymous replies, we kept it that way.
 
 ## A week with What Stuck
 
@@ -193,7 +202,7 @@ All three form links are set in **Church settings** ([`src/churches/settings.ts`
 | Anthropic Claude | Supported alternative report provider                       |
 | Resend           | Sign-in links, report-ready emails and Wednesday notes      |
 | PostgreSQL       | All data                                                    |
-| Dokploy          | Hosting, deploys on every push, and the scheduled jobs      |
+| Vercel and Neon  | Hosting, deploys on every push, scheduled jobs, Postgres    |
 | Higgsfield       | Illustrative photos on the landing page, labeled as AI-made |
 
 ## How we built it
@@ -242,11 +251,11 @@ flowchart TB
     FORMS["Care and connect forms<br/>MinistryForms, Genesis ChMS"]
     BULL["Digital bulletin<br/>In The Bulletin"]
   end
-  subgraph Host["Dokploy"]
+  subgraph Host["Vercel Cron"]
     S["Scheduler"]
   end
   S -->|"Monday 7 AM"| J
-  S -->|"every 15 min"| N
+  S -->|"daily"| N
   S -->|"daily"| C
   M -->|"reply"| R
   BULL -->|"reply link"| R
@@ -274,7 +283,7 @@ flowchart TB
 | Scripture | faith.tools Bible SDK (BSB) and `grab-bcv` for reference parsing              |
 | Email     | Resend                                                                        |
 | Tests     | Vitest, Playwright and axe-core                                               |
-| Hosting   | Docker on Dokploy, with scheduled jobs calling protected endpoints            |
+| Hosting   | Vercel with Neon Postgres, and Vercel Cron calling protected endpoints        |
 
 ### Project layout
 
@@ -325,7 +334,7 @@ npm run test:e2e
 npm run eval:reports
 ```
 
-The `Dockerfile` builds the production image. On startup it applies migrations and creates the demo church. Three scheduled calls, sent with `Authorization: Bearer $CRON_SECRET`, run the jobs: `POST /api/cron/notes` (every 15 minutes), `POST /api/cron/reports` (Monday 7 AM) and `POST /api/cron/cleanup` (daily).
+The live site runs on Vercel with Neon Postgres. The `Dockerfile` builds a self-hosted image that applies migrations and creates the demo church on startup. Three scheduled calls, sent with `Authorization: Bearer $CRON_SECRET`, run the jobs: `/api/cron/notes` (daily), `/api/cron/reports` (Monday) and `/api/cron/cleanup` (daily). On Vercel they're set in `vercel.json`.
 
 ## Known limits and what's next
 
