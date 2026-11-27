@@ -19,7 +19,7 @@ export function Verse({
     <figure className={`relative flex gap-3 ${className}`}>
       <OliveBranch className="text-gold/70 mt-1 w-10 shrink-0" />
       <div>
-        <blockquote className="text-ink font-serif text-lg leading-snug">
+        <blockquote className="text-ink font-serif text-lg leading-snug italic">
           &ldquo;{text}&rdquo;
         </blockquote>
         <figcaption className="text-ink-subtle mt-1 text-sm">

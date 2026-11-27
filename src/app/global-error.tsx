@@ -30,7 +30,7 @@ export default function GlobalError({
           >
             Try again
           </button>
-          <blockquote className="mt-12 font-serif text-lg leading-snug">
+          <blockquote className="mt-12 font-serif text-lg leading-snug italic">
             &ldquo;God is our refuge and strength, an ever-present help in times of trouble.&rdquo;
           </blockquote>
           <p className="text-ink-muted mt-1 text-sm">Psalm 46:1, Berean Standard Bible (BSB)</p>

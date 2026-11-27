@@ -138,7 +138,7 @@ export default function Home() {
       <main>
         <section aria-label="Scripture" className="border-line bg-surface border-y">
           <figure className="mx-auto max-w-3xl px-6 py-16 text-center sm:py-20">
-            <blockquote className="font-serif text-[1.75rem] leading-snug font-medium tracking-[-0.01em] sm:text-[2.25rem]">
+            <blockquote className="font-serif text-[1.75rem] leading-snug font-medium tracking-[-0.01em] italic sm:text-[2.25rem]">
               &ldquo;Consequently, faith comes by hearing, and hearing by the word of Christ.&rdquo;
             </blockquote>
             <figcaption className="text-ink-subtle mt-5 text-base">
@@ -309,7 +309,6 @@ export default function Home() {
       <footer className="bg-sage border-gold/20 border-t">
         <div className="text-ink-subtle mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm">
           <Logo size={22} />
-          <p>Built for the AI for Church Hackathon 2026.</p>
           <nav aria-label="Footer" className="flex gap-4">
             <Link href="/demo" className="hover:text-ink">
               Demo
